@@ -3,953 +3,563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Your CV - CVLatex</title>
+    <title>Upload Your CV - Polish My CV</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --notion-gray-100: #f7f6f3;
-            --notion-gray-200: #e9e5e3;
-            --notion-gray-300: #d1ccc7;
-            --notion-gray-400: #9b9590;
-            --notion-gray-500: #787066;
-            --notion-gray-600: #5e5a52;
-            --notion-text: #37352f;
-            --notion-text-light: #6f6b62;
-            --notion-blue: #2383e2;
-            --notion-blue-light: #edf3ff;
-            --notion-border: #e9e5e3;
-            --notion-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --notion-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --notion-shadow-active: 0 8px 32px rgba(0, 0, 0, 0.12);
-            --notion-success: #28ca42;
-            --notion-warning: #ffbd2e;
-            --notion-error: #ff5f57;
+            --red-accent: #ff2d2d;
+            --black: #111;
+            --gray: #444;
+            --light-gray: #f7f7f7;
+            --card-radius: 20px;
+            --shadow: 0 4px 32px rgba(0,0,0,0.06);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: white;
-            color: var(--notion-text);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif;
-            line-height: 1.6;
-            font-size: 16px;
-            font-weight: 400;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            background: #fff;
+            color: var(--black);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             min-height: 100vh;
         }
-
-        /* Navigation */
         .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--notion-border);
-            padding: 16px 0;
+            background: #fff;
+            border-bottom: 1px solid #ececec;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            padding: 0;
             position: sticky;
             top: 0;
             width: 100%;
             z-index: 1000;
-            box-shadow: var(--notion-shadow);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--notion-text) !important;
-            text-decoration: none;
-            letter-spacing: -0.02em;
-            transition: all 0.2s ease;
-        }
-
-        .navbar-brand:hover {
-            color: var(--notion-blue) !important;
-        }
-
-        .back-button {
-            color: var(--notion-text-light);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 15px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .back-button:hover {
-            background: var(--notion-gray-100);
-            color: var(--notion-text);
-        }
-
-        /* Main Content */
-        .main-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 60px 24px 100px;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 60px;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.2s forwards;
-        }
-
-        .page-title {
-            font-size: 48px;
-            font-weight: 800;
-            color: var(--notion-text);
-            margin-bottom: 20px;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-        }
-
-        .page-subtitle {
-            font-size: 20px;
-            color: var(--notion-text-light);
-            font-weight: 400;
-            max-width: 500px;
-            margin: 0 auto;
-            line-height: 1.5;
-        }
-
-        /* Upload Area */
-        .upload-card {
-            background: white;
-            border-radius: 16px;
-            border: 2px dashed var(--notion-border);
-            padding: 60px 40px;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.4s forwards;
-        }
-
-        .upload-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(35, 131, 226, 0.02) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .upload-card:hover::before {
-            opacity: 1;
-        }
-
-        .upload-card:hover {
-            border-color: var(--notion-blue);
-            box-shadow: var(--notion-shadow-hover);
-            transform: translateY(-4px);
-        }
-
-        .upload-card.dragover {
-            border-color: var(--notion-blue);
-            background: var(--notion-blue-light);
-            box-shadow: var(--notion-shadow-active);
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--notion-blue-light);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 32px;
-            color: var(--notion-blue);
-            transition: all 0.3s ease;
-        }
-
-        .upload-card:hover .upload-icon {
-            background: var(--notion-blue);
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .upload-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--notion-text);
-        }
-
-        .upload-subtitle {
-            font-size: 16px;
-            color: var(--notion-text-light);
-            margin-bottom: 32px;
-            line-height: 1.5;
-        }
-
-        .btn-upload {
-            background: var(--notion-blue);
-            color: white;
-            padding: 14px 32px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: var(--notion-shadow);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            margin-bottom: 20px;
-        }
-
-        .btn-upload:hover {
-            background: #1a75d1;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--notion-shadow-hover);
-        }
-
-        .upload-note {
-            font-size: 14px;
-            color: var(--notion-text-light);
-            margin-top: 20px;
-        }
-
-        /* File Info */
-        .file-info {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid var(--notion-border);
-            padding: 32px;
-            margin-top: 40px;
-            display: none;
-            box-shadow: var(--notion-shadow);
-        }
-
-        .file-info.show {
-            display: block;
-            animation: slideInUp 0.4s ease-out forwards;
-        }
-
-        .file-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--notion-border);
+            height: 68px;
         }
-
-        .file-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--notion-success);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-            margin-right: 16px;
-        }
-
-        .file-details h4 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--notion-text);
-            margin-bottom: 4px;
-        }
-
-        .file-meta {
-            font-size: 14px;
-            color: var(--notion-text-light);
-        }
-
-        .file-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-process {
-            background: var(--notion-success);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .btn-process:hover {
-            background: #20a636;
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: var(--notion-shadow-hover);
-        }
-
-        .btn-remove {
-            background: transparent;
-            color: var(--notion-text-light);
-            padding: 12px 16px;
-            border: 1px solid var(--notion-border);
-            border-radius: 10px;
-            font-weight: 500;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .btn-remove:hover {
-            background: var(--notion-error);
-            color: white;
-            border-color: var(--notion-error);
-        }
-
-        /* File Requirements */
-        .requirements {
-            background: var(--notion-gray-100);
-            border-radius: 16px;
-            padding: 32px;
-            margin-top: 60px;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.6s forwards;
-        }
-
-        .requirements h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--notion-text);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .requirements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .requirement-item {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--notion-border);
-            transition: all 0.2s ease;
-        }
-
-        .requirement-item:hover {
-            box-shadow: var(--notion-shadow);
-            transform: translateY(-2px);
-        }
-
-        .requirement-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--notion-blue-light);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: var(--notion-blue);
-            margin-bottom: 12px;
-        }
-
-        .requirement-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--notion-text);
-            margin-bottom: 4px;
-        }
-
-        .requirement-desc {
-            font-size: 14px;
-            color: var(--notion-text-light);
-            line-height: 1.4;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .main-container {
-                padding: 40px 20px 80px;
-            }
-
-            .page-title {
-                font-size: 36px;
-            }
-
-            .page-subtitle {
-                font-size: 18px;
-            }
-
-            .upload-card {
-                padding: 40px 24px;
-            }
-
-            .requirements-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .file-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-            }
-
-            .file-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-        }
-
-        /* Job Description Section */
-        .job-description-section {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid var(--notion-border);
-            padding: 32px;
-            margin-top: 40px;
-            box-shadow: var(--notion-shadow);
-            opacity: 0;
-            animation: fadeInUp 0.6s ease-out 0.4s forwards;
-        }
-
-        .job-desc-header {
-            margin-bottom: 20px;
-        }
-
-        .job-desc-header h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--notion-text);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .job-desc-subtitle {
-            font-size: 14px;
-            color: var(--notion-text-light);
-            line-height: 1.5;
-            margin: 0;
-        }
-
-        .job-desc-input textarea {
+        .navbar-content {
             width: 100%;
-            min-height: 120px;
-            padding: 16px;
-            border: 1px solid var(--notion-border);
-            border-radius: 12px;
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--notion-text);
-            background: var(--notion-gray-50);
-            resize: vertical;
-            font-family: inherit;
-            transition: all 0.2s ease;
-        }
-
-        .job-desc-input textarea:focus {
-            outline: none;
-            border-color: var(--notion-blue);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .job-desc-input textarea::placeholder {
-            color: var(--notion-text-light);
-        }
-
-        .job-desc-tips {
-            margin-top: 16px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .tip-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: var(--notion-text-light);
-        }
-
-        .tip-item i {
-            color: var(--notion-blue);
-            font-size: 12px;
-        }
-
-        /* Updated file info styles */
-        .file-details {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px;
-            background: var(--notion-gray-100);
-            border-radius: 12px;
-            margin-bottom: 24px;
+            padding: 0 32px;
+            height: 68px;
         }
-
-        .file-meta {
+        .navbar-logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            font-weight: 900;
+            font-size: 26px;
+            color: var(--black);
+            text-decoration: none;
+            gap: 10px;
+            letter-spacing: -0.03em;
         }
-
-        .file-name {
-            font-weight: 600;
-            color: var(--notion-text);
-            font-size: 15px;
-        }
-
-        .file-type {
-            background: var(--notion-blue);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .file-size {
-            color: var(--notion-text-light);
-            font-size: 13px;
-        }
-
-        .remove-file {
-            background: none;
-            border: none;
-            color: var(--notion-text-light);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-
-        .remove-file:hover {
-            background: var(--notion-error);
-            color: white;
-        }
-
-        .action-buttons {
+        .navbar-logo-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--red-accent);
+            border-radius: 10px;
             display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+        }
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+        .navbar-link {
+            color: var(--gray);
+            font-weight: 700;
+            font-size: 17px;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: color 0.2s;
+            letter-spacing: 0.01em;
+        }
+        .navbar-link:hover {
+            color: var(--black);
+        }
+        .main-section {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            min-height: calc(100vh - 68px);
+            height: calc(100vh - 68px);
+            padding: 0;
+            gap: 0;
+        }
+        .left-col {
+            flex: 0 0 40%;
+            max-width: 40vw;
+            min-width: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: stretch;
+            background: #fff;
+            padding: 0;
+            z-index: 2;
+            height: 100%;
+        }
+        .right-col {
+            flex: 1 1 60%;
+            max-width: 60vw;
+            min-width: 0;
+            background: var(--light-gray);
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            min-height: 600px;
+            position: relative;
+        }
+        .upload-card {
+            background: #fff;
+            border-radius: 16px 0 0 16px;
+            box-shadow: 0 8px 48px rgba(0,0,0,0.13);
+            padding: 70px 56px 56px 56px;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+        .hero-headline {
+            font-size: 56px;
+            font-weight: 900;
+            color: var(--black);
+            margin-bottom: 16px;
+            line-height: 1.08;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+            text-align: center;
+        }
+        .hero-sub {
+            font-size: 26px;
+            color: var(--gray);
+            font-weight: 600;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        .upload-btn {
+            background: var(--red-accent);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 26px;
+            font-weight: 900;
+            padding: 28px 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.01em;
+            transition: background 0.2s;
+        }
+        .upload-btn:hover {
+            background: #d90000;
+        }
+        .job-label {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--black);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .job-select {
+            width: 100%;
+            border: 1.5px solid #ececec;
+            border-radius: 10px;
+            padding: 18px 20px;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 28px;
+            background: #fff;
+            color: var(--black);
+            text-transform: uppercase;
+        }
+        .job-desc-label {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--black);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .job-desc-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+        .generate-link {
+            color: var(--red-accent);
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+        .job-desc-area {
+            width: 100%;
+            border: 1.5px solid #ececec;
+            border-radius: 10px;
+            padding: 22px;
+            font-size: 18px;
+            font-weight: 500;
+            min-height: 140px;
+            margin-bottom: 28px;
+            color: var(--black);
+            background: #f7f7f7;
+            resize: vertical;
+        }
+        .review-btn {
+            background: var(--black);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 26px;
+            font-weight: 900;
+            padding: 28px 0;
+            width: 100%;
+            margin-top: 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.01em;
+            transition: background 0.2s;
+        }
+        .review-btn:hover {
+            background: #222;
+        }
+        .illustration {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
         }
-
-        .btn-process {
-            background: var(--notion-success);
-            color: white;
-            padding: 16px 32px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
+        .illustration-img {
+            width: 180px;
+            height: 180px;
+            background: #fff;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            cursor: pointer;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.04);
         }
-
-        .btn-process:hover {
-            background: #20a636;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--notion-shadow-hover);
+        .illustration-img svg {
+            width: 100px;
+            height: 100px;
         }
-
-        .btn-process:disabled {
-            background: var(--notion-gray-400);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Process Button (when no file uploaded) */
-        .standalone-process {
+        .illustration-text {
+            font-size: 18px;
+            color: #222;
             text-align: center;
-            margin-top: 20px;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.6s forwards;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.01em;
         }
-
-        .process-note {
-            font-size: 14px;
-            color: var(--notion-text-light);
-            margin-top: 10px;
+        #reviewResults {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 0 18px 18px 0;
+            box-shadow: 0 8px 48px rgba(0,0,0,0.10);
+            padding: 64px 56px 56px 56px;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            animation: fadeInReview 0.5s cubic-bezier(.4,1.4,.6,1) 1;
+            overflow-y: auto;
+        }
+        @keyframes fadeInReview {
+            from { opacity: 0; transform: translateY(40px) scale(0.98); }
+            to { opacity: 1; transform: none; }
+        }
+        .review-rating {
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: var(--red-accent);
+            margin-bottom: 18px;
+            text-align: left;
+            letter-spacing: -2px;
+        }
+        .review-rating-label {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .review-section-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #111;
+            margin-bottom: 32px;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            text-align: left;
+        }
+        .review-block {
+            margin-bottom: 38px;
+            background: #f7f7f7;
+            border-radius: 12px;
+            padding: 28px 32px 18px 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        .review-block-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--red-accent);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .review-list {
+            list-style: disc inside;
+            margin: 0 0 0 12px;
+            padding: 0;
+            color: #222;
+            font-size: 1.08rem;
+            line-height: 1.7;
+        }
+        @media (max-width: 1200px) {
+            .main-section {
+                flex-direction: column;
+                min-height: unset;
+                height: auto;
+                padding: 40px 0;
+            }
+            .left-col, .right-col {
+                max-width: 100vw;
+                width: 100%;
+                min-width: unset;
+                height: auto;
+            }
+            .upload-card {
+                border-radius: 16px;
+                height: auto;
+            }
+        }
+        @media (max-width: 900px) {
+            .main-section {
+                flex-direction: column;
+                padding: 20px 0;
+            }
+            .left-col, .right-col {
+                width: 100%;
+                min-width: unset;
+                max-width: 100vw;
+            }
+            .upload-card {
+                max-width: 100vw;
+                padding: 40px 10px;
+            }
+            .right-col {
+                margin-top: 24px;
+            }
+        }
+        @media (max-width: 700px) {
+            .hero-headline {
+                font-size: 32px;
+            }
+            .hero-sub {
+                font-size: 16px;
+            }
+            .upload-card {
+                padding: 24px 4px;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-file-code me-2"></i>CVLatex
+                <i class="fas fa-code-branch"></i>
+                Polish My CV
             </a>
-            <a href="/" class="back-button">
-                <i class="fas fa-arrow-left"></i>
-                Back to home
-            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">Process</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#demo">Demo</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link nav-cta" href="/upload">Start Free</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/create-cv" style="margin-left: 8px;">Create CV</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
-
-    <!-- Main Content -->
-    <div class="main-container">
-        <div class="page-header">
-            <h1 class="page-title">Upload your CV</h1>
-            <p class="page-subtitle">
-                Transform your resume into a professional LaTeX document with AI-powered precision
-            </p>
-        </div>
-
-        <!-- Upload Area -->
-        <div class="upload-card" id="uploadArea">
-            <div class="upload-icon">
-                <i class="fas fa-cloud-upload-alt"></i>
-            </div>
-            <h2 class="upload-title">Drop your CV here</h2>
-            <p class="upload-subtitle">
-                Support for PDF and DOCX files up to 16MB.<br>
-                Our AI will extract and structure your content automatically.
-            </p>
-            <label for="fileInput" class="btn-upload">
-                <i class="fas fa-plus"></i>
-                Choose file
-            </label>
-            <input type="file" id="fileInput" accept=".pdf,.docx" style="display: none;">
-            <div class="upload-note">
-                Or drag and drop your file anywhere on this area
-            </div>
-        </div>
-
-        <!-- Job Description Section (Optional) -->
-        <div class="job-description-section" id="jobDescriptionSection">
-            <div class="job-desc-header">
-                <h3>
-                    <i class="fas fa-bullseye" style="color: var(--notion-blue);"></i>
-                    Job Description (Optional)
-                </h3>
-                <p class="job-desc-subtitle">
-                    Want to tailor your resume for a specific position? Paste the job description below and our AI will optimize your content to better match the requirements.
-                </p>
-            </div>
-            <div class="job-desc-input">
-                <textarea 
-                    id="jobDescription" 
-                    placeholder="Paste the job description here to tailor your resume...&#10;&#10;Example:&#10;We are looking for a Software Engineer with experience in Python, React, and cloud technologies. The ideal candidate should have...">
-                </textarea>
-                <div class="job-desc-tips">
-                    <div class="tip-item">
-                        <i class="fas fa-lightbulb"></i>
-                        <span>Include the full job posting for best results</span>
-                    </div>
-                    <div class="tip-item">
-                        <i class="fas fa-target"></i>
-                        <span>Key requirements and skills will be prioritized</span>
-                    </div>
-                    <div class="tip-item">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Leave empty for standard professional formatting</span>
-                    </div>
+    <div class="main-section">
+        <div class="left-col">
+            <div class="upload-card">
+                <div>
+                    <div class="hero-headline">Fix your resume using AI</div>
+                    <div class="hero-sub">Find out if your resume fits the job you're applying for</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Process Button (when no file uploaded) -->
-        <div class="standalone-process" id="standaloneProcess">
-            <button class="btn-process btn-process-disabled" onclick="showUploadPrompt()" disabled>
-                <i class="fas fa-upload"></i>
-                <span>Upload CV First</span>
-            </button>
-            <p class="process-note">Please upload your CV file above to continue</p>
-        </div>
-
-        <!-- File Info Section -->
-        <div class="file-info" id="fileInfo">
-            <div class="file-details">
-                <div class="file-meta">
-                    <span class="file-name" id="fileName">resume.pdf</span>
-                    <span class="file-type" id="fileType">PDF</span>
-                    <span class="file-size" id="fileSize">2.4 MB</span>
-                </div>
-                <button class="remove-file" onclick="removeFile()">
-                    <i class="fas fa-times"></i>
+                <button class="upload-btn" id="uploadBtn">
+                    <i class="fas fa-upload"></i> Upload your resume
                 </button>
+                <input type="file" id="fileInput" accept=".pdf,.docx" style="display: none;">
+                <div>
+                    <div class="job-label">Enter the job you are applying for</div>
+                    <input class="job-select" id="jobSelect" list="jobRoles" placeholder="e.g. Senior Software Engineer" autocomplete="off">
+                    <datalist id="jobRoles">
+                        <option value="Senior Software Engineer">
+                        <option value="Product Manager">
+                        <option value="Data Scientist">
+                        <option value="UX Designer">
+                        <option value="Other">
+                    </datalist>
+                </div>
+                <div>
+                    <div class="job-desc-row">
+                        <div class="job-desc-label">Job Description</div>
+                        <span class="generate-link" id="generateLink">(Generate)</span>
+                    </div>
+                    <textarea class="job-desc-area" id="jobDesc" placeholder="Input Job Description. Write down the requirements for the job you are applying for. For best results, you should copy–paste the JD from LinkedIn or Career Website. Or you can auto–generate by clicking the button above."></textarea>
+                </div>
+                <button class="review-btn" id="reviewBtn">Review my resume &rarr;</button>
+                    </div>
+                </div>
+        <div class="right-col">
+            <div class="illustration" id="illustrationBlock">
+                <div class="illustration-img">
+                    <!-- SVG or image placeholder -->
+                    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="40" width="80" height="40" rx="12" fill="#ff2d2d"/>
+                        <circle cx="60" cy="60" r="12" fill="#fff"/>
+                        <rect x="50" y="80" width="20" height="20" rx="6" fill="#ff2d2d"/>
+                    </svg>
+                </div>
+                <div class="illustration-text">Upload your resume to get personalized recommendations.</div>
             </div>
-            
-            <div class="action-buttons">
-                <button class="btn-process" onclick="processFile()">
-                    <i class="fas fa-magic"></i>
-                    <span id="processButtonText">Transform Resume</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Requirements -->
-        <div class="requirements">
-            <h3>
-                <i class="fas fa-info-circle" style="color: var(--notion-blue);"></i>
-                File requirements
-            </h3>
-            <div class="requirements-grid">
-                <div class="requirement-item">
-                    <div class="requirement-icon">
-                        <i class="fas fa-file-pdf"></i>
-                    </div>
-                    <div class="requirement-title">Supported formats</div>
-                    <div class="requirement-desc">PDF and DOCX files with clear text content</div>
-                </div>
-                <div class="requirement-item">
-                    <div class="requirement-icon">
-                        <i class="fas fa-weight-hanging"></i>
-                    </div>
-                    <div class="requirement-title">File size limit</div>
-                    <div class="requirement-desc">Maximum 16MB for optimal processing speed</div>
-                </div>
-                <div class="requirement-item">
-                    <div class="requirement-icon">
-                        <i class="fas fa-language"></i>
-                    </div>
-                    <div class="requirement-title">Content quality</div>
-                    <div class="requirement-desc">Best results with well-structured CVs in English</div>
-                </div>
-                <div class="requirement-item">
-                    <div class="requirement-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <div class="requirement-title">Privacy first</div>
-                    <div class="requirement-desc">Your files are processed securely and not stored</div>
-                </div>
-            </div>
+            <div id="reviewResults"></div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© 2023 Polish My CV. All rights reserved.</span>
+        </div>
+    </footer>
     <script>
-        let selectedFile = null;
-
-        // File input and drag & drop functionality
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const fileInfo = document.getElementById('fileInfo');
-        const jobDescriptionSection = document.getElementById('jobDescriptionSection');
-        const processButtonText = document.getElementById('processButtonText');
-        const standaloneProcess = document.getElementById('standaloneProcess');
-
-        // File input change event
-        fileInput.addEventListener('change', handleFileSelect);
-
-        // Drag and drop events
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFileSelect({ target: { files: files } });
-            }
-        });
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            // Validate file type
-            const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-            if (!allowedTypes.includes(file.type)) {
-                alert('Please select a PDF or DOCX file.');
-                return;
-            }
-
-            // Validate file size (16MB limit)
-            const maxSize = 16 * 1024 * 1024; // 16MB in bytes
-            if (file.size > maxSize) {
-                alert('File size must be less than 16MB. Please choose a smaller file.');
-                return;
-            }
-
-            selectedFile = file;
-            displayFileInfo(file);
-        }
-
-        function displayFileInfo(file) {
-            // Update file information
-            document.getElementById('fileName').textContent = file.name;
-            document.getElementById('fileType').textContent = file.name.split('.').pop().toUpperCase();
-            document.getElementById('fileSize').textContent = formatFileSize(file.size);
-            
-            // Hide upload area and standalone process button, show file info
-            uploadArea.style.display = 'none';
-            standaloneProcess.style.display = 'none';
-            fileInfo.classList.add('show');
-            
-            // Scroll to file info
-            fileInfo.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        function removeFile() {
-            selectedFile = null;
-            uploadArea.style.display = 'block';
-            standaloneProcess.style.display = 'block';
-            fileInput.value = '';
-            fileInfo.classList.remove('show');
-            
-            // Clear job description
-            document.getElementById('jobDescription').value = '';
-        }
-
-        function processFile() {
-            if (!selectedFile) {
-                alert('Please select a file first.');
-                return;
-            }
-
-            // Get job description (optional)
-            const jobDescription = document.getElementById('jobDescription').value.trim();
-
-            // Create form data
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-            
-            // Determine mode based on whether job description is provided
-            if (jobDescription) {
-                formData.append('mode', 'tailored');
-                formData.append('job_description', jobDescription);
+        document.getElementById('uploadBtn').onclick = function() {
+            document.getElementById('fileInput').click();
+        };
+        // Show file name or feedback when a file is selected
+        document.getElementById('fileInput').addEventListener('change', function() {
+            const fileInput = this;
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (fileInput.files && fileInput.files.length > 0) {
+                uploadBtn.innerHTML = '<i class="fas fa-check"></i> ' + fileInput.files[0].name + ' selected';
+                uploadBtn.style.background = '#28ca42';
             } else {
-                formData.append('mode', 'professional');
+                uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload your resume';
+                uploadBtn.style.background = '';
             }
-
-            // Show processing state
-            const processBtn = document.querySelector('.btn-process');
-            const originalText = processBtn.innerHTML;
-            const loadingText = jobDescription ? 
-                '<i class="fas fa-spinner fa-spin"></i> Tailoring resume...' : 
-                '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            
-            processBtn.innerHTML = loadingText;
-            processBtn.disabled = true;
-
-            // Submit the form
-            fetch('/api/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to preview page
-                    window.location.href = data.redirect_url;
-                } else {
-                    alert('Error: ' + (data.error || 'Unknown error occurred'));
-                    processBtn.innerHTML = originalText;
-                    processBtn.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while processing your file. Please try again.');
-                processBtn.innerHTML = originalText;
-                processBtn.disabled = false;
-            });
-        }
-
-        // Click anywhere on upload area to trigger file selection
-        uploadArea.addEventListener('click', () => {
-            fileInput.click();
         });
-
-        // Enhanced animations on scroll
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add smooth entrance animations
-            const elements = document.querySelectorAll('.upload-card, .requirements, .file-info');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
+        // Gemini job description generation
+        document.getElementById('generateLink').onclick = async function() {
+            const role = document.getElementById('jobSelect').value.trim();
+            if (!role) {
+                alert('Please enter a job role first.');
+                return;
+            }
+            const jobDescArea = document.getElementById('jobDesc');
+            jobDescArea.value = 'Generating job description for "' + role + '"...';
+            try {
+                const response = await fetch('/generate-job-desc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role })
                 });
-            }, { threshold: 0.1 });
-
-            elements.forEach(el => {
-                observer.observe(el);
-            });
-        });
-
-        function showUploadPrompt() {
-            alert('Please upload a CV file first by clicking the "Choose file" button above or dragging and dropping a file.');
-            uploadArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    </script>
-</body>
-</html> 
+                const data = await response.json();
+                if (data && data.description) {
+                    jobDescArea.value = data.description;
+                } else {
+                    jobDescArea.value = '';
+                    alert('Could not generate job description.');
+                }
+            } catch (e) {
+                jobDescArea.value = '';
+                alert('Error generating job description.');
+            }
+        };
+        // Review my resume button handler
+        document.getElementById('reviewBtn').onclick = async function() {
+            const role = document.getElementById('jobSelect').value.trim();
+            const jobDesc = document.getElementById('jobDesc').value.trim();
+            // For demo, only collect job role and job description
+            // Expand this to collect all form fields as needed
+            const cv = {
+                summary: '', // Add summary if you have a field for it
+                experience: [], // Add experience if you have fields for it
+                education: [], // Add education if you have fields for it
+                skills: {}, // Add skills if you have fields for it
+                // ...add more as needed
+            };
+            if (!jobDesc) {
+                alert('Please enter or generate a job description first.');
+                return;
+            }
+            const reviewBtn = document.getElementById('reviewBtn');
+            reviewBtn.innerText = 'Reviewing...';
+            reviewBtn.disabled = true;
+            const reviewResults = document.getElementById('reviewResults');
+            reviewResults.style.display = 'none';
+            reviewResults.innerHTML = '';
+            try {
+                const response = await fetch('/api/review-cv', {
+                method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cv: cv,
+                        job_description: jobDesc
+                    })
+                });
+                const data = await response.json();
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    // Hide illustration, show review results full panel
+                    document.getElementById('illustrationBlock').style.display = 'none';
+                    let html = '';
+                    html += `<div class="review-section-title">CV Review Results</div>`;
+                    html += `<div class="review-rating-label">AI Rating</div>`;
+                    html += `<div class="review-rating">${data.rating ?? '--'}/100</div>`;
+                    html += `<div class="review-block"><div class="review-block-title">Strengths</div><ul class="review-list">${(data.strengths||[]).map(s => `<li>${s}</li>`).join('')}</ul></div>`;
+                    html += `<div class="review-block"><div class="review-block-title">Weaknesses</div><ul class="review-list">${(data.weaknesses||[]).map(s => `<li>${s}</li>`

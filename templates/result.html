@@ -633,8 +633,13 @@
             
             // Support both old format (upload) and new format (create-cv)
             const pdfUrl = urlParams.get('pdf') || (urlParams.get('pdf_file') ? `/preview/${urlParams.get('pdf_file')}` : null);
-            const latexUrl = urlParams.get('latex') || (urlParams.get('latex_file') ? `/download/${urlParams.get('latex_file')}` : null);
-            const pdfDownloadUrl = urlParams.get('pdf_download') || (urlParams.get('pdf_file') ? `/download/${urlParams.get('pdf_file')}` : null);
+            const latexUrl = (urlParams.get('latex') ? `/download/${urlParams.get('latex')}` : null) || 
+                            (urlParams.get('latex_file') ? `/download/${urlParams.get('latex_file')}` : null);
+            
+            // Handle PDF download URL - check for pdf parameter first, then pdf_download, then pdf_file
+            const pdfDownloadUrl = (urlParams.get('pdf') ? `/download/${urlParams.get('pdf')}` : null) || 
+                                   urlParams.get('pdf_download') || 
+                                   (urlParams.get('pdf_file') ? `/download/${urlParams.get('pdf_file')}` : null);
 
             console.log('URL Parameters:', {
                 pdf: urlParams.get('pdf'),
@@ -653,7 +658,7 @@
             // Set up PDF preview
             if (pdfUrl) {
                 const pdfViewer = document.getElementById('pdfViewer');
-                pdfViewer.innerHTML = `<iframe src="${pdfUrl}" width="100%" height="100%" frameborder="0"></iframe>`;
+                pdfViewer.innerHTML = `<iframe src="/preview/${urlParams.get('pdf')}" width="100%" height="100%" frameborder="0"></iframe>`;
             }
 
             // Set up download buttons
