@@ -14,9 +14,13 @@ import time
 import traceback
 import shutil
 import uuid
+from sheets_integration import save_cv_to_sheets
 
 # Load environment variables
 load_dotenv()
+
+# Get Google Sheets configuration
+GOOGLE_SHEETS_SPREADSHEET_ID = os.getenv('GOOGLE_SHEETS_SPREADSHEET_ID')
 
 # Source LaTeX environment if available (for Render deployment)
 if os.path.exists('/app/latex_env.sh'):
@@ -77,6 +81,11 @@ for path in pdflatex_paths:
 if not LATEX_AVAILABLE:
     # Final check using which command
     LATEX_AVAILABLE = shutil.which('pdflatex') is not None
+
+# Force enable LaTeX if running on Windows (local development)
+if os.name == 'nt' and shutil.which('pdflatex'):
+    LATEX_AVAILABLE = True
+    print(f"🪟 Windows detected - LaTeX force-enabled for local development")
 
 # Check for build status file
 BUILD_STATUS = "unknown"
@@ -946,8 +955,16 @@ def generate_latex_resume(parsed_data):
 
 def compile_latex_to_pdf(latex_content, output_filename):
     """Compile LaTeX content to PDF using pdflatex"""
+    print(f"🔍 compile_latex_to_pdf called with output_filename: {output_filename}")
+    print(f"🔍 LATEX_AVAILABLE status: {LATEX_AVAILABLE}")
+    print(f"🔍 Running on OS: {os.name}")
+    print(f"🔍 Current working directory: {os.getcwd()}")
+    
     if not LATEX_AVAILABLE:
         print("❌ LaTeX not available - cannot compile to PDF")
+        # Double-check LaTeX availability
+        pdflatex_check = shutil.which('pdflatex')
+        print(f"🔍 Double-check pdflatex: {pdflatex_check}")
         return False
     
     print(f"🔧 Starting PDF compilation for: {output_filename}")
@@ -1357,8 +1374,22 @@ def upload_file():
             print(f"Job Description (first 200 chars): {job_description[:200]}...")
             parsed_data = enhance_cv_for_job(parsed_data, job_description)
         
-        # Clean up uploaded file
-        os.remove(file_path)
+        # Save CV data to Google Sheets if configured
+        if GOOGLE_SHEETS_SPREADSHEET_ID:
+            try:
+                save_cv_to_sheets(parsed_data, GOOGLE_SHEETS_SPREADSHEET_ID)
+            except Exception as e:
+                print(f"⚠️ Failed to save CV data to Google Sheets: {e}")
+                # Continue with the process even if sheets save fails
+        
+        # Clean up uploaded file (with error handling)
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                print(f"✅ Cleaned up uploaded file: {file_path}")
+        except Exception as cleanup_error:
+            print(f"⚠️ Could not clean up uploaded file: {cleanup_error}")
+            # Don't let cleanup errors affect the main process
         
         # Generate unique session ID for this CV data
         session_id = str(uuid.uuid4())
@@ -2175,9 +2206,12 @@ def generate_from_preview():
         
         # Clean up session file
         try:
-            os.remove(session_file)
-        except:
-            pass  # Ignore if already removed
+            if os.path.exists(session_file):
+                os.remove(session_file)
+                print(f"✅ Cleaned up session file: {session_file}")
+        except Exception as cleanup_error:
+            print(f"⚠️ Could not clean up session file: {cleanup_error}")
+            # Don't let cleanup errors affect the main response
         
         response_data = {
             'success': True,
@@ -2207,6 +2241,88 @@ def generate_from_preview():
         print(f"Error in generate_from_preview: {str(e)}")
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+
+@app.route('/generate-job-desc', methods=['POST'])
+def generate_job_desc():
+    data = request.get_json()
+    role = data.get('role', '').strip()
+    if not role:
+        return jsonify({'error': 'No role provided'}), 400
+    prompt = f"""
+Write a professional job description for the role of '{role}'. The description should be suitable for a resume or job application and include key responsibilities, required skills, and qualifications. Be concise and relevant to modern industry standards.
+"""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyANT0edzcgHlcS-4tOLKVY8XKjYYrswVEM"
+    headers = {'Content-Type': 'application/json'}
+    payload = {
+        "contents": [
+            {"parts": [
+                {"text": prompt}
+            ]}
+        ]
+    }
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        if response.status_code == 200:
+            result = response.json()
+            desc = result['candidates'][0]['content']['parts'][0]['text']
+            return jsonify({'description': desc})
+        else:
+            return jsonify({'error': 'Gemini API error', 'details': response.text}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/review-cv', methods=['POST'])
+def review_cv():
+    data = request.get_json()
+    cv = data.get('cv')
+    if not cv:
+        return jsonify({'error': 'Missing CV'}), 400
+
+    # Compose prompt for Gemini
+    prompt = f"""
+You are a professional resume reviewer. Given the following CV (in JSON), do the following:
+1. Give an overall rating for the CV (0–100).
+2. List the top strengths of this CV.
+3. List the main weaknesses of this CV.
+4. Give actionable suggestions to improve this CV.
+
+Return your answer as JSON:
+{{
+  "rating": 0-100,
+  "strengths": ["..."],
+  "weaknesses": ["..."],
+  "suggestions": ["..."]
+}}
+
+CV:
+{json.dumps(cv, indent=2)}
+"""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyANT0edzcgHlcS-4tOLKVY8XKjYYrswVEM"
+    headers = {'Content-Type': 'application/json'}
+    payload = {
+        "contents": [
+            {"parts": [
+                {"text": prompt}
+            ]}
+        ]
+    }
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        if response.status_code == 200:
+            result = response.json()
+            text = result['candidates'][0]['content']['parts'][0]['text']
+            # Extract JSON from Gemini's response
+            json_start = text.find('{')
+            json_end = text.rfind('}') + 1
+            if json_start != -1 and json_end != -1:
+                feedback = json.loads(text[json_start:json_end])
+                return jsonify(feedback)
+            else:
+                return jsonify({'error': 'Could not parse Gemini response', 'raw': text}), 500
+        else:
+            return jsonify({'error': 'Gemini API error', 'details': response.text}), 500
+    except Exception as e:
+        return jsonify({'error': f'Gemini error: {e}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True) 

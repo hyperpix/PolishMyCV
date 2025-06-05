@@ -1,431 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CV to LaTeX Converter - Jake's Resume Style</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-bg: #f8f9fa;
-            --dark-text: #2c3e50;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--dark-text);
-        }
-
-        .main-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin: 2rem auto;
-            max-width: 1200px;
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 0;
-        }
-
-        .upload-section {
-            padding: 3rem 2rem;
-        }
-
-        .upload-area {
-            border: 3px dashed var(--secondary-color);
-            border-radius: 15px;
-            padding: 3rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            background: var(--light-bg);
-            cursor: pointer;
-        }
-
-        .upload-area:hover {
-            border-color: var(--accent-color);
-            background: #f0f8ff;
-            transform: translateY(-2px);
-        }
-
-        .upload-area.dragover {
-            border-color: var(--accent-color);
-            background: #fff;
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.2);
-        }
-
-        .upload-icon {
-            font-size: 4rem;
-            color: var(--secondary-color);
-            margin-bottom: 1rem;
-        }
-
-        .btn-custom {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            color: white;
-        }
-
-        .progress-section {
-            padding: 2rem;
-            display: none;
-        }
-
-        .results-section {
-            padding: 2rem;
-            display: none;
-        }
-
-        .parsed-data {
-            background: var(--light-bg);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .latex-preview {
-            background: #f8f8f8;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .section-header {
-            color: var(--primary-color);
-            font-weight: 600;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-
-        .feature-card {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--secondary-color);
-            margin-bottom: 1rem;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 2rem;
-            height: 2rem;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--secondary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .alert-custom {
-            border-radius: 10px;
-            border: none;
-            padding: 1rem 1.5rem;
-        }
-
-        .file-info {
-            background: #e8f4fd;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .upload-area {
-                padding: 2rem 1rem;
-            }
-            
-            .upload-icon {
-                font-size: 3rem;
-            }
-        }
-    </style>
-</head>
-<body>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="static/styles/index.css" />
+  </head>
+  <body>
     <div class="container-fluid">
-        <div class="main-container">
-            <!-- Header -->
-            <div class="header">
-                <h1><i class="fas fa-file-code me-3"></i>CV to LaTeX Converter</h1>
-                <p>Transform your CV into professional LaTeX format using Jake's Resume template</p>
-            </div>
-
-            <!-- Upload Section -->
-            <div class="upload-section">
-                <div class="row">
-                    <div class="col-lg-8 mx-auto">
-                        <div class="upload-area" id="uploadArea">
-                            <div class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <h4>Drop your CV here or click to browse</h4>
-                            <p class="text-muted">Supports PDF and DOCX files (max 16MB)</p>
-                            <input type="file" id="fileInput" accept=".pdf,.docx" style="display: none;">
-                            <button class="btn btn-custom mt-3" onclick="document.getElementById('fileInput').click()">
-                                <i class="fas fa-folder-open me-2"></i>Choose File
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Features -->
-                <div class="row mt-5">
-                    <div class="col-md-4">
-                        <div class="feature-card text-center">
-                            <div class="feature-icon">
-                                <i class="fas fa-magic"></i>
-                            </div>
-                            <h5>Smart Parsing</h5>
-                            <p class="text-muted">Automatically extracts and structures information from your CV</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="feature-card text-center">
-                            <div class="feature-icon">
-                                <i class="fab fa-latex"></i>
-                            </div>
-                            <h5>Jake's Template</h5>
-                            <p class="text-muted">Converts to the popular Jake's Resume LaTeX template format</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="feature-card text-center">
-                            <div class="feature-icon">
-                                <i class="fas fa-download"></i>
-                            </div>
-                            <h5>Instant Download</h5>
-                            <p class="text-muted">Get your LaTeX file ready for Overleaf or local compilation</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Progress Section -->
-            <div class="progress-section" id="progressSection">
-                <div class="text-center">
-                    <div class="spinner"></div>
-                    <h4 class="mt-3">Processing your CV...</h4>
-                    <p class="text-muted">Extracting text and converting to LaTeX format</p>
-                </div>
-            </div>
-
-            <!-- Results Section -->
-            <div class="results-section" id="resultsSection">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="section-header">
-                            <i class="fas fa-search me-2"></i>Extracted Information
-                        </div>
-                        <div class="parsed-data" id="parsedData">
-                            <!-- Parsed data will be displayed here -->
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="section-header">
-                            <i class="fab fa-latex me-2"></i>LaTeX Preview
-                        </div>
-                        <div class="latex-preview" id="latexPreview">
-                            <!-- LaTeX code will be displayed here -->
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="text-center mt-4">
-                    <button class="btn btn-custom btn-lg" id="downloadBtn">
-                        <i class="fas fa-download me-2"></i>Download LaTeX File
-                    </button>
-                    <button class="btn btn-outline-secondary btn-lg ms-3" onclick="location.reload()">
-                        <i class="fas fa-redo me-2"></i>Convert Another
-                    </button>
-                </div>
-            </div>
-
-            <!-- Alert Area -->
-            <div id="alertArea" class="px-4 pb-4"></div>
+      <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+          <h1><i class="fas fa-file-code me-3"></i>CV to LaTeX Converter</h1>
+          <p>
+            Transform your CV into professional LaTeX format using Jake's Resume
+            template
+          </p>
         </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+          <div class="row">
+            <div class="col-lg-8 mx-auto">
+              <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h4>Drop your CV here or click to browse</h4>
+                <p class="text-muted">Supports PDF and DOCX files (max 16MB)</p>
+                <input
+                  type="file"
+                  id="fileInput"
+                  accept=".pdf,.docx"
+                  style="display: none"
+                />
+                <button
+                  class="btn btn-custom mt-3"
+                  onclick="document.getElementById('fileInput').click()"
+                >
+                  <i class="fas fa-folder-open me-2"></i>Choose File
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Features -->
+          <div class="row mt-5">
+            <div class="col-md-4">
+              <div class="feature-card text-center">
+                <div class="feature-icon">
+                  <i class="fas fa-magic"></i>
+                </div>
+                <h5>Smart Parsing</h5>
+                <p class="text-muted">
+                  Automatically extracts and structures information from your CV
+                </p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="feature-card text-center">
+                <div class="feature-icon">
+                  <i class="fab fa-latex"></i>
+                </div>
+                <h5>Jake's Template</h5>
+                <p class="text-muted">
+                  Converts to the popular Jake's Resume LaTeX template format
+                </p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="feature-card text-center">
+                <div class="feature-icon">
+                  <i class="fas fa-download"></i>
+                </div>
+                <h5>Instant Download</h5>
+                <p class="text-muted">
+                  Get your LaTeX file ready for Overleaf or local compilation
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section" id="progressSection">
+          <div class="text-center">
+            <div class="spinner"></div>
+            <h4 class="mt-3">Processing your CV...</h4>
+            <p class="text-muted">
+              Extracting text and converting to LaTeX format
+            </p>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="section-header">
+                <i class="fas fa-search me-2"></i>Extracted Information
+              </div>
+              <div class="parsed-data" id="parsedData">
+                <!-- Parsed data will be displayed here -->
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="section-header">
+                <i class="fab fa-latex me-2"></i>LaTeX Preview
+              </div>
+              <div class="latex-preview" id="latexPreview">
+                <!-- LaTeX code will be displayed here -->
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <button class="btn btn-custom btn-lg" id="downloadBtn">
+              <i class="fas fa-download me-2"></i>Download LaTeX File
+            </button>
+            <button
+              class="btn btn-outline-secondary btn-lg ms-3"
+              onclick="location.reload()"
+            >
+              <i class="fas fa-redo me-2"></i>Convert Another
+            </button>
+          </div>
+        </div>
+
+        <!-- Alert Area -->
+        <div id="alertArea" class="px-4 pb-4"></div>
+      </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    
+
     <script>
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const progressSection = document.getElementById('progressSection');
-        const resultsSection = document.getElementById('resultsSection');
-        const alertArea = document.getElementById('alertArea');
-        const uploadSection = document.querySelector('.upload-section');
+      const uploadArea = document.getElementById("uploadArea");
+      const fileInput = document.getElementById("fileInput");
+      const progressSection = document.getElementById("progressSection");
+      const resultsSection = document.getElementById("resultsSection");
+      const alertArea = document.getElementById("alertArea");
+      const uploadSection = document.querySelector(".upload-section");
 
-        // Drag and drop functionality
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
+      // Drag and drop functionality
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+      });
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
+      uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("dragover");
+      });
 
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
-        });
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFile(files[0]);
+        }
+      });
 
-        uploadArea.addEventListener('click', () => {
-            fileInput.click();
-        });
+      uploadArea.addEventListener("click", () => {
+        fileInput.click();
+      });
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
-            }
-        });
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          handleFile(e.target.files[0]);
+        }
+      });
 
-        function showAlert(message, type = 'danger') {
-            const alertHtml = `
+      function showAlert(message, type = "danger") {
+        const alertHtml = `
                 <div class="alert alert-${type} alert-custom alert-dismissible fade show" role="alert">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                    <i class="fas fa-${
+                      type === "success" ? "check-circle" : "exclamation-circle"
+                    } me-2"></i>
                     ${message}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             `;
-            alertArea.innerHTML = alertHtml;
+        alertArea.innerHTML = alertHtml;
+      }
+
+      function handleFile(file) {
+        // Validate file type
+        const allowedTypes = [
+          "application/pdf",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        ];
+        if (!allowedTypes.includes(file.type)) {
+          showAlert("Please upload a PDF or DOCX file only.");
+          return;
         }
 
-        function handleFile(file) {
-            // Validate file type
-            const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-            if (!allowedTypes.includes(file.type)) {
-                showAlert('Please upload a PDF or DOCX file only.');
-                return;
-            }
+        // Validate file size (16MB limit)
+        if (file.size > 16 * 1024 * 1024) {
+          showAlert("File size must be less than 16MB.");
+          return;
+        }
 
-            // Validate file size (16MB limit)
-            if (file.size > 16 * 1024 * 1024) {
-                showAlert('File size must be less than 16MB.');
-                return;
-            }
-
-            // Show file info
-            const fileInfo = `
+        // Show file info
+        const fileInfo = `
                 <div class="file-info">
                     <h6><i class="fas fa-file me-2"></i>${file.name}</h6>
-                    <small class="text-muted">Size: ${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                    <small class="text-muted">Size: ${(
+                      file.size /
+                      1024 /
+                      1024
+                    ).toFixed(2)} MB</small>
                 </div>
             `;
-            
-            // Show progress and hide upload section
-            uploadSection.style.display = 'none';
-            progressSection.style.display = 'block';
-            alertArea.innerHTML = fileInfo;
 
-            // Upload file
-            uploadFile(file);
-        }
+        // Show progress and hide upload section
+        uploadSection.style.display = "none";
+        progressSection.style.display = "block";
+        alertArea.innerHTML = fileInfo;
 
-        function uploadFile(file) {
-            const formData = new FormData();
-            formData.append('file', file);
+        // Upload file
+        uploadFile(file);
+      }
 
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                progressSection.style.display = 'none';
-                
-                if (data.success) {
-                    displayResults(data);
-                    resultsSection.style.display = 'block';
-                    showAlert('CV successfully converted to LaTeX!', 'success');
-                } else {
-                    uploadSection.style.display = 'block';
-                    showAlert(data.error || 'An error occurred while processing your file.');
-                }
-            })
-            .catch(error => {
-                progressSection.style.display = 'none';
-                uploadSection.style.display = 'block';
-                showAlert('Network error. Please try again.');
-                console.error('Error:', error);
-            });
-        }
+      function uploadFile(file) {
+        const formData = new FormData();
+        formData.append("file", file);
 
-        function displayResults(data) {
-            const parsedData = data.parsed_data;
-            const latexContent = data.latex_content;
+        fetch("/upload", {
+          method: "POST",
+          body: formData
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            progressSection.style.display = "none";
 
-            // Display parsed data
-            const parsedDataHtml = `
+            if (data.success) {
+              displayResults(data);
+              resultsSection.style.display = "block";
+              showAlert("CV successfully converted to LaTeX!", "success");
+            } else {
+              uploadSection.style.display = "block";
+              showAlert(
+                data.error || "An error occurred while processing your file."
+              );
+            }
+          })
+          .catch((error) => {
+            progressSection.style.display = "none";
+            uploadSection.style.display = "block";
+            showAlert("Network error. Please try again.");
+            console.error("Error:", error);
+          });
+      }
+
+      function displayResults(data) {
+        const parsedData = data.parsed_data;
+        const latexContent = data.latex_content;
+
+        // Display parsed data
+        const parsedDataHtml = `
                 <div class="mb-3">
                     <h6><i class="fas fa-user me-2"></i>Personal Information</h6>
-                    <p><strong>Name:</strong> ${parsedData.name || 'Not found'}</p>
-                    <p><strong>Email:</strong> ${parsedData.email || 'Not found'}</p>
-                    <p><strong>Phone:</strong> ${parsedData.phone || 'Not found'}</p>
-                    <p><strong>LinkedIn:</strong> ${parsedData.linkedin || 'Not found'}</p>
-                    <p><strong>GitHub:</strong> ${parsedData.github || 'Not found'}</p>
+                    <p><strong>Name:</strong> ${
+                      parsedData.name || "Not found"
+                    }</p>
+                    <p><strong>Email:</strong> ${
+                      parsedData.email || "Not found"
+                    }</p>
+                    <p><strong>Phone:</strong> ${
+                      parsedData.phone || "Not found"
+                    }</p>
+                    <p><strong>LinkedIn:</strong> ${
+                      parsedData.linkedin || "Not found"
+                    }</p>
+                    <p><strong>GitHub:</strong> ${
+                      parsedData.github || "Not found"
+                    }</p>
                 </div>
                 
                 <div class="mb-3">
@@ -445,45 +310,59 @@
                 
                 <div class="mb-3">
                     <h6><i class="fas fa-code me-2"></i>Skills</h6>
-                    <p><strong>Languages:</strong> ${parsedData.skills.languages.length} found</p>
-                    <p><strong>Frameworks:</strong> ${parsedData.skills.frameworks.length} found</p>
-                    <p><strong>Tools:</strong> ${parsedData.skills.tools.length} found</p>
+                    <p><strong>Languages:</strong> ${
+                      parsedData.skills.languages.length
+                    } found</p>
+                    <p><strong>Frameworks:</strong> ${
+                      parsedData.skills.frameworks.length
+                    } found</p>
+                    <p><strong>Tools:</strong> ${
+                      parsedData.skills.tools.length
+                    } found</p>
                 </div>
             `;
 
-            document.getElementById('parsedData').innerHTML = parsedDataHtml;
+        document.getElementById("parsedData").innerHTML = parsedDataHtml;
 
-            // Display LaTeX preview (truncated)
-            const truncatedLatex = latexContent.length > 2000 
-                ? latexContent.substring(0, 2000) + '\n\n... (truncated for preview)'
-                : latexContent;
-            
-            document.getElementById('latexPreview').innerHTML = `<pre><code class="language-latex">${escapeHtml(truncatedLatex)}</code></pre>`;
-            
-            // Highlight syntax
-            if (window.Prism) {
-                Prism.highlightAll();
-            }
+        // Display LaTeX preview (truncated)
+        const truncatedLatex =
+          latexContent.length > 2000
+            ? latexContent.substring(0, 2000) +
+              "\n\n... (truncated for preview)"
+            : latexContent;
 
-            // Set download button
-            document.getElementById('downloadBtn').onclick = () => {
-                window.location.href = data.download_url;
-            };
+        document.getElementById(
+          "latexPreview"
+        ).innerHTML = `<pre><code class="language-latex">${escapeHtml(
+          truncatedLatex
+        )}</code></pre>`;
+
+        // Highlight syntax
+        if (window.Prism) {
+          Prism.highlightAll();
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        // Set download button
+        document.getElementById("downloadBtn").onclick = () => {
+          window.location.href = data.download_url;
+        };
+      }
 
-        // Initialize tooltips
-        document.addEventListener('DOMContentLoaded', function() {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Initialize tooltips
+      document.addEventListener("DOMContentLoaded", function () {
+        const tooltipTriggerList = [].slice.call(
+          document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl);
         });
+      });
     </script>
-</body>
-</html> 
+  </body>
+</html>
