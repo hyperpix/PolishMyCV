@@ -89,7 +89,7 @@ html {
   border-radius: 22px;
   box-shadow: 0 8px 32px rgba(60, 60, 60, 0.13),
     0 1.5px 8px rgba(244, 68, 68, 0.07);
-  border: 2.5px solid #f44;
+  border: 2.5px solid purple;
   padding: 22px 0 22px 0;
   position: fixed;
   top: 24px;
@@ -174,7 +174,7 @@ html {
 }
 
 .nav-cta {
-  background: #f44 !important;
+  background: linear-gradient(180deg, #8e24aa, #ce93d8);
   color: #fff !important;
   border-radius: 14px !important;
   padding: 12px 34px !important;
@@ -256,7 +256,7 @@ html {
 }
 .hero-headline .hero-right-pop {
   display: inline-block;
-  background: #f44;
+   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
   padding: 0.09em 0.55em 0.09em 0.55em;
   border-radius: 10px;
@@ -516,20 +516,22 @@ html {
   transform: translateY(-18px) scale(1.04);
   box-shadow: 0 16px 48px rgba(244, 68, 68, 0.18), 0 2px 12px rgba(0, 0, 0, 0.1);
   z-index: 2;
+  border-radius: 50px;
 }
 .feature-card:hover .accent {
   height: 80px;
+  width: 80px;
 }
 
 .feature-icon {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
+  margin: 15px auto 24px;
   font-size: 32px;
   color: white;
   position: relative;
@@ -547,6 +549,8 @@ html {
   margin-bottom: 16px;
   color: var(--gray-800);
   position: relative;
+  text-align: center;
+  align-items: center;
   z-index: 2;
 }
 
@@ -554,6 +558,8 @@ html {
   color: var(--gray-600);
   line-height: 1.6;
   font-size: 16px;
+  align-items: center;
+  text-align: center;
   position: relative;
   z-index: 2;
 }
@@ -633,7 +639,7 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(
+  /* background: radial-gradient(
       circle at 30% 70%,
       rgba(99, 102, 241, 0.3) 0%,
       transparent 50%
@@ -642,7 +648,8 @@ html {
       circle at 70% 30%,
       rgba(139, 92, 246, 0.2) 0%,
       transparent 50%
-    );
+    ); */
+    background: linear-gradient(135deg, #667eea 0%, #2979ff 100%);
 }
 
 .cta-content {
@@ -668,7 +675,7 @@ html {
 }
 
 .cta-button {
-  background: linear-gradient(135deg, var(--success), #059669);
+  background: #000000;
   color: white;
   padding: 20px 48px;
   border: none;
@@ -731,7 +738,9 @@ html {
 }
 
 .footer-description {
+  width: 800px;
   line-height: 1.6;
+  margin-left: 10%;
   margin-bottom: 24px;
   color: #fff;
   font-size: 1.1rem;
