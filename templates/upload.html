@@ -1,565 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Your CV - Polish My CV</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --red-accent: #ff2d2d;
-            --black: #111;
-            --gray: #444;
-            --light-gray: #f7f7f7;
-            --card-radius: 20px;
-            --shadow: 0 4px 32px rgba(0,0,0,0.06);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #fff;
-            color: var(--black);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-        }
-        .navbar {
-            background: #fff;
-            border-bottom: 1px solid #ececec;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            padding: 0;
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 68px;
-        }
-        .navbar-content {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            height: 68px;
-        }
-        .navbar-logo {
-            display: flex;
-            align-items: center;
-            font-weight: 900;
-            font-size: 26px;
-            color: var(--black);
-            text-decoration: none;
-            gap: 10px;
-            letter-spacing: -0.03em;
-        }
-        .navbar-logo-icon {
-            width: 38px;
-            height: 38px;
-            background: var(--red-accent);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 22px;
-        }
-        .navbar-links {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-        .navbar-link {
-            color: var(--gray);
-            font-weight: 700;
-            font-size: 17px;
-            text-decoration: none;
-            text-transform: uppercase;
-            transition: color 0.2s;
-            letter-spacing: 0.01em;
-        }
-        .navbar-link:hover {
-            color: var(--black);
-        }
-        .main-section {
-            display: flex;
-            align-items: stretch;
-            justify-content: center;
-            min-height: calc(100vh - 68px);
-            height: calc(100vh - 68px);
-            padding: 0;
-            gap: 0;
-        }
-        .left-col {
-            flex: 0 0 40%;
-            max-width: 40vw;
-            min-width: 340px;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            justify-content: stretch;
-            background: #fff;
-            padding: 0;
-            z-index: 2;
-            height: 100%;
-        }
-        .right-col {
-            flex: 1 1 60%;
-            max-width: 60vw;
-            min-width: 0;
-            background: var(--light-gray);
-            display: flex;
-            align-items: stretch;
-            justify-content: center;
-            min-height: 600px;
-            position: relative;
-        }
-        .upload-card {
-            background: #fff;
-            border-radius: 16px 0 0 16px;
-            box-shadow: 0 8px 48px rgba(0,0,0,0.13);
-            padding: 70px 56px 56px 56px;
-            width: 100%;
-            height: 100%;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 36px;
-            justify-content: space-between;
-            box-sizing: border-box;
-        }
-        .hero-headline {
-            font-size: 56px;
-            font-weight: 900;
-            color: var(--black);
-            margin-bottom: 16px;
-            line-height: 1.08;
-            text-transform: uppercase;
-            letter-spacing: -0.04em;
-            text-align: center;
-        }
-        .hero-sub {
-            font-size: 26px;
-            color: var(--gray);
-            font-weight: 600;
-            margin-bottom: 32px;
-            text-align: center;
-        }
-        .upload-btn {
-            background: var(--red-accent);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 26px;
-            font-weight: 900;
-            padding: 28px 0;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.01em;
-            transition: background 0.2s;
-        }
-        .upload-btn:hover {
-            background: #d90000;
-        }
-        .job-label {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--black);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-        .job-select {
-            width: 100%;
-            border: 1.5px solid #ececec;
-            border-radius: 10px;
-            padding: 18px 20px;
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 28px;
-            background: #fff;
-            color: var(--black);
-            text-transform: uppercase;
-        }
-        .job-desc-label {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--black);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-        .job-desc-row {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 10px;
-        }
-        .generate-link {
-            color: var(--red-accent);
-            font-size: 18px;
-            font-weight: 700;
-            text-decoration: underline;
-            cursor: pointer;
-            margin-left: 10px;
-            text-transform: uppercase;
-        }
-        .job-desc-area {
-            width: 100%;
-            border: 1.5px solid #ececec;
-            border-radius: 10px;
-            padding: 22px;
-            font-size: 18px;
-            font-weight: 500;
-            min-height: 140px;
-            margin-bottom: 28px;
-            color: var(--black);
-            background: #f7f7f7;
-            resize: vertical;
-        }
-        .review-btn {
-            background: var(--black);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 26px;
-            font-weight: 900;
-            padding: 28px 0;
-            width: 100%;
-            margin-top: 0;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.01em;
-            transition: background 0.2s;
-        }
-        .review-btn:hover {
-            background: #222;
-        }
-        .illustration {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .illustration-img {
-            width: 180px;
-            height: 180px;
-            background: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.04);
-        }
-        .illustration-img svg {
-            width: 100px;
-            height: 100px;
-        }
-        .illustration-text {
-            font-size: 18px;
-            color: #222;
-            text-align: center;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.01em;
-        }
-        #reviewResults {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            border-radius: 0 18px 18px 0;
-            box-shadow: 0 8px 48px rgba(0,0,0,0.10);
-            padding: 64px 56px 56px 56px;
-            display: none;
-            flex-direction: column;
-            justify-content: flex-start;
-            animation: fadeInReview 0.5s cubic-bezier(.4,1.4,.6,1) 1;
-            overflow-y: auto;
-        }
-        @keyframes fadeInReview {
-            from { opacity: 0; transform: translateY(40px) scale(0.98); }
-            to { opacity: 1; transform: none; }
-        }
-        .review-rating {
-            font-size: 3.2rem;
-            font-weight: 900;
-            color: var(--red-accent);
-            margin-bottom: 18px;
-            text-align: left;
-            letter-spacing: -2px;
-        }
-        .review-rating-label {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #222;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .review-section-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: #111;
-            margin-bottom: 32px;
-            text-transform: uppercase;
-            letter-spacing: -2px;
-            text-align: left;
-        }
-        .review-block {
-            margin-bottom: 38px;
-            background: #f7f7f7;
-            border-radius: 12px;
-            padding: 28px 32px 18px 32px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-        }
-        .review-block-title {
-            font-size: 1.3rem;
-            font-weight: 900;
-            color: var(--red-accent);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .review-list {
-            list-style: disc inside;
-            margin: 0 0 0 12px;
-            padding: 0;
-            color: #222;
-            font-size: 1.08rem;
-            line-height: 1.7;
-        }
-        @media (max-width: 1200px) {
-            .main-section {
-                flex-direction: column;
-                min-height: unset;
-                height: auto;
-                padding: 40px 0;
-            }
-            .left-col, .right-col {
-                max-width: 100vw;
-                width: 100%;
-                min-width: unset;
-                height: auto;
-            }
-            .upload-card {
-                border-radius: 16px;
-                height: auto;
-            }
-        }
-        @media (max-width: 900px) {
-            .main-section {
-                flex-direction: column;
-                padding: 20px 0;
-            }
-            .left-col, .right-col {
-                width: 100%;
-                min-width: unset;
-                max-width: 100vw;
-            }
-            .upload-card {
-                max-width: 100vw;
-                padding: 40px 10px;
-            }
-            .right-col {
-                margin-top: 24px;
-            }
-        }
-        @media (max-width: 700px) {
-            .hero-headline {
-                font-size: 32px;
-            }
-            .hero-sub {
-                font-size: 16px;
-            }
-            .upload-card {
-                padding: 24px 4px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles/upload.css" />
+  </head>
+  <body>
     <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-code-branch"></i>
-                Polish My CV
-            </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars text-white"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#how-it-works">Process</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#demo">Demo</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link nav-cta" href="/upload">Start Free</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/create-cv" style="margin-left: 8px;">Create CV</a>
-                    </li>
-                </ul>
-            </div>
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-code-branch"></i>
+          Polish My CV
+        </a>
+        <button
+          class="navbar-toggler border-0"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <i class="fas fa-bars text-white"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#features">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#how-it-works">Process</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#demo">Demo</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link nav-cta" href="/upload">Start Free</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/create-cv" style="margin-left: 8px"
+                >Create CV</a
+              >
+            </li>
+          </ul>
         </div>
+      </div>
     </nav>
     <div class="main-section">
-        <div class="left-col">
-            <div class="upload-card">
-                <div>
-                    <div class="hero-headline">Fix your resume using AI</div>
-                    <div class="hero-sub">Find out if your resume fits the job you're applying for</div>
-                </div>
-                <button class="upload-btn" id="uploadBtn">
-                    <i class="fas fa-upload"></i> Upload your resume
-                </button>
-                <input type="file" id="fileInput" accept=".pdf,.docx" style="display: none;">
-                <div>
-                    <div class="job-label">Enter the job you are applying for</div>
-                    <input class="job-select" id="jobSelect" list="jobRoles" placeholder="e.g. Senior Software Engineer" autocomplete="off">
-                    <datalist id="jobRoles">
-                        <option value="Senior Software Engineer">
-                        <option value="Product Manager">
-                        <option value="Data Scientist">
-                        <option value="UX Designer">
-                        <option value="Other">
-                    </datalist>
-                </div>
-                <div>
-                    <div class="job-desc-row">
-                        <div class="job-desc-label">Job Description</div>
-                        <span class="generate-link" id="generateLink">(Generate)</span>
-                    </div>
-                    <textarea class="job-desc-area" id="jobDesc" placeholder="Input Job Description. Write down the requirements for the job you are applying for. For best results, you should copy–paste the JD from LinkedIn or Career Website. Or you can auto–generate by clicking the button above."></textarea>
-                </div>
-                <button class="review-btn" id="reviewBtn">Review my resume &rarr;</button>
-                    </div>
-                </div>
-        <div class="right-col">
-            <div class="illustration" id="illustrationBlock">
-                <div class="illustration-img">
-                    <!-- SVG or image placeholder -->
-                    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="20" y="40" width="80" height="40" rx="12" fill="#ff2d2d"/>
-                        <circle cx="60" cy="60" r="12" fill="#fff"/>
-                        <rect x="50" y="80" width="20" height="20" rx="6" fill="#ff2d2d"/>
-                    </svg>
-                </div>
-                <div class="illustration-text">Upload your resume to get personalized recommendations.</div>
+      <div class="left-col">
+        <div class="upload-card">
+          <div>
+            <div class="hero-headline">Fix your resume using AI</div>
+            <div class="hero-sub">
+              Find out if your resume fits the job you're applying for
             </div>
-            <div id="reviewResults"></div>
+          </div>
+          <button class="upload-btn" id="uploadBtn">
+            <i class="fas fa-upload"></i> Upload your resume
+          </button>
+          <input
+            type="file"
+            id="fileInput"
+            accept=".pdf,.docx"
+            style="display: none"
+          />
+          <div>
+            <div class="job-label">Enter the job you are applying for</div>
+            <input
+              class="job-select"
+              id="jobSelect"
+              list="jobRoles"
+              placeholder="e.g. Senior Software Engineer"
+              autocomplete="off"
+            />
+            <datalist id="jobRoles">
+              <option value="Senior Software Engineer"></option>
+              <option value="Product Manager"></option>
+              <option value="Data Scientist"></option>
+              <option value="UX Designer"></option>
+              <option value="Other"></option>
+            </datalist>
+          </div>
+          <div>
+            <div class="job-desc-row">
+              <div class="job-desc-label">Job Description</div>
+              <span class="generate-link" id="generateLink">(Generate)</span>
+            </div>
+            <textarea
+              class="job-desc-area"
+              id="jobDesc"
+              placeholder="Input Job Description. Write down the requirements for the job you are applying for. For best results, you should copy–paste the JD from LinkedIn or Career Website. Or you can auto–generate by clicking the button above."
+            ></textarea>
+          </div>
+          <button class="review-btn" id="reviewBtn">
+            Review my resume &rarr;
+          </button>
         </div>
+      </div>
+      <div class="right-col">
+        <div class="illustration" id="illustrationBlock">
+          <div class="illustration-img">
+            <svg
+              viewBox="0 0 120 120"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="20"
+                y="40"
+                width="80"
+                height="40"
+                rx="12"
+                fill="#ff2d2d"
+              />
+              <circle cx="60" cy="60" r="12" fill="#fff" />
+              <rect
+                x="50"
+                y="80"
+                width="20"
+                height="20"
+                rx="6"
+                fill="#ff2d2d"
+              />
+            </svg>
+          </div>
+          <div class="illustration-text">
+            Upload your resume to get personalized recommendations.
+          </div>
+        </div>
+        <div id="reviewResults"></div>
+      </div>
     </div>
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container text-center">
-            <span class="text-muted">© 2023 Polish My CV. All rights reserved.</span>
-        </div>
+    <footer class="footer mt-40 py-3 bg-light">
+      <div class="container text-center">
+        <span class="text-muted"
+          >© 2025 Polish My CV. All rights reserved.</span
+        >
+      </div>
     </footer>
-    <script>
-        document.getElementById('uploadBtn').onclick = function() {
-            document.getElementById('fileInput').click();
-        };
-        // Show file name or feedback when a file is selected
-        document.getElementById('fileInput').addEventListener('change', function() {
-            const fileInput = this;
-            const uploadBtn = document.getElementById('uploadBtn');
-            if (fileInput.files && fileInput.files.length > 0) {
-                uploadBtn.innerHTML = '<i class="fas fa-check"></i> ' + fileInput.files[0].name + ' selected';
-                uploadBtn.style.background = '#28ca42';
-            } else {
-                uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload your resume';
-                uploadBtn.style.background = '';
-            }
-        });
-        // Gemini job description generation
-        document.getElementById('generateLink').onclick = async function() {
-            const role = document.getElementById('jobSelect').value.trim();
-            if (!role) {
-                alert('Please enter a job role first.');
-                return;
-            }
-            const jobDescArea = document.getElementById('jobDesc');
-            jobDescArea.value = 'Generating job description for "' + role + '"...';
-            try {
-                const response = await fetch('/generate-job-desc', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ role })
-                });
-                const data = await response.json();
-                if (data && data.description) {
-                    jobDescArea.value = data.description;
-                } else {
-                    jobDescArea.value = '';
-                    alert('Could not generate job description.');
-                }
-            } catch (e) {
-                jobDescArea.value = '';
-                alert('Error generating job description.');
-            }
-        };
-        // Review my resume button handler
-        document.getElementById('reviewBtn').onclick = async function() {
-            const role = document.getElementById('jobSelect').value.trim();
-            const jobDesc = document.getElementById('jobDesc').value.trim();
-            // For demo, only collect job role and job description
-            // Expand this to collect all form fields as needed
-            const cv = {
-                summary: '', // Add summary if you have a field for it
-                experience: [], // Add experience if you have fields for it
-                education: [], // Add education if you have fields for it
-                skills: {}, // Add skills if you have fields for it
-                // ...add more as needed
-            };
-            if (!jobDesc) {
-                alert('Please enter or generate a job description first.');
-                return;
-            }
-            const reviewBtn = document.getElementById('reviewBtn');
-            reviewBtn.innerText = 'Reviewing...';
-            reviewBtn.disabled = true;
-            const reviewResults = document.getElementById('reviewResults');
-            reviewResults.style.display = 'none';
-            reviewResults.innerHTML = '';
-            try {
-                const response = await fetch('/api/review-cv', {
-                method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        cv: cv,
-                        job_description: jobDesc
-                    })
-                });
-                const data = await response.json();
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                } else {
-                    // Hide illustration, show review results full panel
-                    document.getElementById('illustrationBlock').style.display = 'none';
-                    let html = '';
-                    html += `<div class="review-section-title">CV Review Results</div>`;
-                    html += `<div class="review-rating-label">AI Rating</div>`;
-                    html += `<div class="review-rating">${data.rating ?? '--'}/100</div>`;
-                    html += `<div class="review-block"><div class="review-block-title">Strengths</div><ul class="review-list">${(data.strengths||[]).map(s => `<li>${s}</li>`).join('')}</ul></div>`;
-                    html += `<div class="review-block"><div class="review-block-title">Weaknesses</div><ul class="review-list">${(data.weaknesses||[]).map(s => `<li>${s}</li>`
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/scripts/upload.js"></script>
+  </body>
+</html>
