@@ -1,0 +1,79 @@
+{
+  "parsed_data": {
+    "name": "A YESHA MEHMOOD",
+    "email": "a y eshauni99@gmail.com",
+    "phone": "+923035901289",
+    "education": [
+      {
+        "degree": "BECHOLOR'S IN COMPUTER SCIENCE",
+        "institution": "VIR TUAL UNIVERSITY OF P AKIST AN",
+        "date": "6TH SEMESTER"
+      },
+      {
+        "degree": "PRE-MEDICLE",
+        "institution": "THE ST AND ARD GR OUP OF COLLEGES SIALK OT"
+      }
+    ],
+    "experience": [
+      {
+        "title": "W eb Dev elop er",
+        "description": [
+          "Highly skilled F ron tend and W ordPress Dev elop er with a pro v en trac k record of deliv ering o v er 100+ successful pro jects.",
+          "Exp ertise in HTML, CSS, Ja v aScript , React , T ailwind ,Bo otstrap e, PHP and W ordPress customization, with a strong fo cus on creating resp onsiv e, user-friendly w ebsites.",
+          "A dept at collab orating with cross-functional teams to deliv er high-qualit y digital solutions that meet clien t needs and exceed exp ectations."
+        ]
+      },
+      {
+        "title": "In ternship",
+        "company": "Co dexCue",
+        "description": [
+          "Strong bac kground in fron tend dev elopmen t with React.js, gained through an in ternship at Co dexCue.",
+          "Pro\u001fcient in CSS animations, Ja v aScript, and resp onsiv e design.",
+          "Dev elop ed custom w eb applications with a fo cus on p erformance optimization.",
+          "Skilled in using mo dern fron tend framew orks and deliv ering high-qualit y results."
+        ]
+      }
+    ],
+    "skills": {
+      "languages": [
+        "HTML",
+        "CSS",
+        "Ja v aScript",
+        "PHP"
+      ],
+      "frameworks": [
+        "React",
+        "T ailwind",
+        "Bo otstrap e",
+        "jQuery",
+        "Bo otstrap",
+        "React Material UI",
+        "React Bo otstrap",
+        "T ailwind CSS"
+      ],
+      "other": [
+        "W ordPress customization",
+        "theme dev elopmen t",
+        "plugin in tegration",
+        "Shopify"
+      ]
+    },
+    "certifications": [
+      {
+        "name": "Digital Mark eting Diploma",
+        "issuer": "University Of South Asia"
+      },
+      {
+        "name": "In tro duction to Career Skills In W eb Dev elopmen t",
+        "issuer": "Linke din L e arning"
+      },
+      {
+        "name": "Fron ted Dev elopmen t",
+        "issuer": "W eb devrs"
+      }
+    ]
+  },
+  "mode": "professional",
+  "job_description": "",
+  "original_filename": "Ayesha_Mehmood_4_resume.pdf"
+}

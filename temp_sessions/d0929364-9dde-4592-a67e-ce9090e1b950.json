@@ -1,0 +1,90 @@
+{
+  "parsed_data": {
+    "name": "AYESHA MEHMOOD",
+    "email": "ayeshauni99@gmail.com",
+    "phone": "+923035901289",
+    "linkedin": null,
+    "github": null,
+    "website": "https://ayeshamehmood.netlify.app/",
+    "address": "Nishat Colony, Lahore",
+    "education": [
+      {
+        "degree": "PRE-MEDICLE",
+        "institution": "THE STANDARD GROUP OF COLLEGES",
+        "date": null,
+        "location": "SIALKOT",
+        "gpa": null,
+        "details": null
+      },
+      {
+        "degree": "BECHOLOR’S IN COMPUTER SCIENCE",
+        "institution": "VIRTUAL UNIVERSITY OF PAKISTAN",
+        "date": "6TH SEMESTER",
+        "location": null,
+        "gpa": null,
+        "details": null
+      }
+    ],
+    "experience": [
+      {
+        "title": "Internship",
+        "company": "CodexCue",
+        "date": null,
+        "location": null,
+        "description": [
+          "Strong background in frontend development with React.js, gained through an internship at CodexCue."
+        ]
+      }
+    ],
+    "projects": [],
+    "skills": {
+      "languages": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "PHP"
+      ],
+      "frameworks": [
+        "React",
+        "Tailwind",
+        "Bootstrape",
+        "Bootstrap",
+        "React Material UI",
+        "React Bootstrap",
+        "Tailwind CSS"
+      ],
+      "tools": [],
+      "libraries": [
+        "jQuery"
+      ],
+      "databases": [],
+      "other": [
+        "WordPress",
+        "Shopify"
+      ]
+    },
+    "certifications": [
+      {
+        "name": "Digital Marketing Diploma",
+        "issuer": "University Of South Asia",
+        "date": null
+      },
+      {
+        "name": "Introduction to Career Skills In Web Development",
+        "issuer": "Linkedin Learning",
+        "date": null
+      }
+    ],
+    "awards": [],
+    "languages": [],
+    "custom_sections": [
+      {
+        "title": "PORTFOLIO",
+        "content": null
+      }
+    ]
+  },
+  "mode": "professional",
+  "job_description": "",
+  "original_filename": "Ayesha_Mehmood_4.pdf"
+}

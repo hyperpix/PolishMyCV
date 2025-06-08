@@ -12,23 +12,29 @@ def extract_text_from_pdf(file_path):
     """Extract text from PDF file"""
     text = ""
     try:
+        print(f"Attempting to open PDF file: {file_path}")
         with open(file_path, 'rb') as file:
             pdf_reader = PyPDF2.PdfReader(file)
+            print(f"Number of pages in PDF: {len(pdf_reader.pages)}")
             for page in pdf_reader.pages:
                 text += page.extract_text() + "\n"
+    except PyPDF2.errors.PdfReadError as e:
+        print(f"PDF read error: {e}")
     except Exception as e:
-        print(f"Error extracting text from PDF: {e}")
+        print(f"Unexpected error extracting text from PDF: {e}")
     return text
 
 def extract_text_from_docx(file_path):
     """Extract text from DOCX file"""
     text = ""
     try:
+        print(f"Attempting to open DOCX file: {file_path}")
         doc = Document(file_path)
+        print(f"Number of paragraphs in DOCX: {len(doc.paragraphs)}")
         for paragraph in doc.paragraphs:
             text += paragraph.text + "\n"
     except Exception as e:
-        print(f"Error extracting text from DOCX: {e}")
+        print(f"Unexpected error extracting text from DOCX: {e}")
     return text
 
 def enhance_parsing_with_gemini(text, gemini_api_key):

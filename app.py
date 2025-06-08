@@ -1357,30 +1357,34 @@ def upload_file():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         
+        print(f"File saved to: {file_path}")
+        
         # Extract text based on file type
-        if filename.lower().endswith('.pdf'):
-            extracted_text = extract_text_from_pdf(file_path)
-        elif filename.lower().endswith('.docx'):
-            extracted_text = extract_text_from_docx(file_path)
-        else:
-            return jsonify({'error': 'Unsupported file type'}), 400
-        
-        # Parse the extracted text using Gemini AI
-        parsed_data = parse_cv_text(extracted_text)
-        
-        # Enhance CV for job if in tailored mode
-        if mode == 'tailored' and job_description:
-            print(f"=== TAILORING CV FOR JOB ===")
-            print(f"Job Description (first 200 chars): {job_description[:200]}...")
-            parsed_data = enhance_cv_for_job(parsed_data, job_description)
-        
-        # Save CV data to Google Sheets if configured
-        if GOOGLE_SHEETS_SPREADSHEET_ID:
-            try:
-                save_cv_to_sheets(parsed_data, GOOGLE_SHEETS_SPREADSHEET_ID)
-            except Exception as e:
-                print(f"⚠️ Failed to save CV data to Google Sheets: {e}")
-                # Continue with the process even if sheets save fails
+        extracted_text = ""
+        try:
+            if filename.lower().endswith('.pdf'):
+                extracted_text = extract_text_from_pdf(file_path)
+            elif filename.lower().endswith('.docx'):
+                extracted_text = extract_text_from_docx(file_path)
+            else:
+                return jsonify({'error': 'Unsupported file type'}), 400
+            
+            print(f"Extracted text length: {len(extracted_text)}")
+            print(f"First 200 chars: {extracted_text[:200]}")
+            
+            # Check if text extraction was successful
+            if not extracted_text or len(extracted_text.strip()) < 10:
+                return jsonify({
+                    'success': False,
+                    'error': 'Failed to extract text from CV. Please ensure the file is not corrupted and contains readable text.'
+                }), 400
+            
+        except Exception as e:
+            print(f"Error during text extraction: {e}")
+            return jsonify({
+                'success': False,
+                'error': f'Error extracting text from file: {str(e)}'
+            }), 400
         
         # Clean up uploaded file (with error handling)
         try:
@@ -1389,30 +1393,12 @@ def upload_file():
                 print(f"✅ Cleaned up uploaded file: {file_path}")
         except Exception as cleanup_error:
             print(f"⚠️ Could not clean up uploaded file: {cleanup_error}")
-            # Don't let cleanup errors affect the main process
         
-        # Generate unique session ID for this CV data
-        session_id = str(uuid.uuid4())
-        
-        # Save CV data to session storage (you could also use database)
-        cv_data = {
-            'parsed_data': parsed_data,
-            'mode': mode,
-            'job_description': job_description,
-            'original_filename': filename
-        }
-        
-        # Save to temporary storage (using file system for simplicity)
-        import json
-        session_file = os.path.join('temp_sessions', f'{session_id}.json')
-        os.makedirs('temp_sessions', exist_ok=True)
-        with open(session_file, 'w', encoding='utf-8') as f:
-            json.dump(cv_data, f, ensure_ascii=False, indent=2)
-        
+        # Return success with extracted text for the review functionality
         return jsonify({
             'success': True,
-            'session_id': session_id,
-            'redirect_url': f'/preview-cv/{session_id}'
+            'extracted_text': extracted_text,
+            'filename': filename
         })
     
     return jsonify({'error': 'Invalid file type. Please upload PDF or DOCX files only.'}), 400
