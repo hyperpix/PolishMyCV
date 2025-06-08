@@ -174,7 +174,7 @@ html {
 }
 
 .nav-cta {
-  background: linear-gradient(180deg, #8e24aa, #ce93d8);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff !important;
   border-radius: 14px !important;
   padding: 12px 34px !important;
@@ -256,7 +256,7 @@ html {
 }
 .hero-headline .hero-right-pop {
   display: inline-block;
-   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
   padding: 0.09em 0.55em 0.09em 0.55em;
   border-radius: 10px;
@@ -417,27 +417,29 @@ html {
   position: relative;
   z-index: 10;
   /* border-radius: 40px 40px 0 0; */
-  margin-top: 50px;
+  margin-top: 100px;
   padding: 80px 0;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 100px;
 }
 
 .section-title {
-  font-size: 48px;
+  width: 1000px;
+  font-size: 55px;
   font-weight: 800;
   color: var(--gray-800);
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  margin-left: 150px;
   letter-spacing: -0.02em;
 }
 
 .section-subtitle {
-  font-size: 20px;
+  font-size: 25px;
   color: var(--gray-600);
-  max-width: 600px;
+  max-width: 750px;
   margin: 0 auto;
   line-height: 1.6;
 }
@@ -475,6 +477,7 @@ html {
   background: linear-gradient(180deg, #f44, #ffd600);
   transition: height 0.2s;
 }
+
 .feature-card.red .accent {
   background: linear-gradient(180deg, #f44, #ffd600);
 }
@@ -518,6 +521,11 @@ html {
   z-index: 2;
   border-radius: 50px;
 }
+
+.feature-card {
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+  border-radius: 30px;
+}
 .feature-card:hover .accent {
   height: 80px;
   width: 80px;
@@ -544,7 +552,7 @@ html {
 }
 
 .feature-title {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 700;
   margin-bottom: 16px;
   color: var(--gray-800);
@@ -557,7 +565,7 @@ html {
 .feature-text {
   color: var(--gray-600);
   line-height: 1.6;
-  font-size: 16px;
+  font-size: 20px;
   align-items: center;
   text-align: center;
   position: relative;
@@ -598,7 +606,8 @@ html {
 .step-number {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, var(--accent), #0891b2);
+  /* background: linear-gradient(135deg, var(--accent), #0891b2); */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -611,7 +620,7 @@ html {
 }
 
 .step-title {
-  font-size: 22px;
+  font-size: 30px;
   font-weight: 700;
   margin-bottom: 16px;
   color: var(--gray-800);
@@ -620,6 +629,8 @@ html {
 .step-description {
   color: var(--gray-600);
   line-height: 1.6;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 /* CTA Section */
@@ -655,21 +666,21 @@ html {
 .cta-content {
   position: relative;
   z-index: 2;
-  max-width: 800px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 0 32px;
 }
 
 .cta-title {
-  font-size: 56px;
+  font-size: 60px;
   font-weight: 900;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
   letter-spacing: -0.02em;
 }
 
 .cta-subtitle {
-  font-size: 22px;
-  margin-bottom: 48px;
+  font-size: 30px;
+  margin-bottom: 70px;
   opacity: 0.9;
   line-height: 1.5;
 }
@@ -679,7 +690,7 @@ html {
   color: white;
   padding: 20px 48px;
   border: none;
-  border-radius: 16px;
+  border-radius: 30px;
   font-weight: 700;
   font-size: 20px;
   text-decoration: none;
@@ -691,9 +702,10 @@ html {
 }
 
 .cta-button:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   box-shadow: 0 20px 60px rgba(16, 185, 129, 0.6);
-  color: white;
+  color: black;
+  background: white;
 }
 
 /* Footer */
@@ -706,7 +718,7 @@ html {
 }
 
 .footer-content {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0 32px;
   display: flex;
@@ -719,9 +731,10 @@ html {
 
 .footer-brand {
   font-weight: 900;
-  font-size: 2.2rem;
+  font-size: 5rem;
   color: #fff;
-  margin-bottom: 18px;
+  margin-left: 150px;
+  margin-bottom: 30px;
   letter-spacing: -1px;
   position: relative;
   display: inline-block;
@@ -730,28 +743,50 @@ html {
 .footer-brand::after {
   content: "";
   display: block;
-  width: 48px;
+  width: 80px;
   height: 5px;
-  background: #f44;
+  background: #667eea;
   border-radius: 3px;
   margin: 10px auto 0 auto;
 }
 
 .footer-description {
   width: 800px;
+  font-weight: 700;
   line-height: 1.6;
   margin-left: 10%;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
   color: #fff;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   opacity: 0.85;
+}
+
+.footer-section2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  /* gap: 40px; */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 100px;
+}
+
+.footer-section {
+  /* background: white; */
+  border-radius: 24px;
+  padding: 20px 12px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  /* border: 1px solid var(--gray-200); */
+  position: relative;
+  transition: all 0.3s ease;
 }
 
 .footer-section h4 {
   color: #fff;
   font-weight: 700;
   margin-bottom: 18px;
-  font-size: 1.1rem;
+  font-size: 2rem;
+  text-align: start;
   letter-spacing: 0.5px;
 }
 
@@ -769,24 +804,24 @@ html {
   color: #fff;
   text-decoration: none;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.2rem;
   transition: color 0.2s;
 }
 
 .footer-links a:hover {
-  color: #f44;
+  color: #677eea;
 }
 
 .footer-bottom {
-  padding-top: 36px;
+  padding-top: 40px;
   border-top: 1.5px solid #222;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  /* gap: 16px; */
   color: #fff;
-  font-size: 1rem;
+  font-size: 1.2rem;
   opacity: 0.7;
 }
 
@@ -960,22 +995,22 @@ html {
   outline: none;
 }
 .hero-modal .big-btn.upload {
-  background: #f44;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
 }
 .hero-modal .big-btn.upload:hover {
-  background: #d32f2f;
+     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   transform: translateY(-4px) scale(1.04);
 }
 .hero-modal .big-btn.create {
   background: #fff;
   color: #111;
-  border: 2.5px solid #f44;
+  border: 2.5px solid #667eea;
 }
 .hero-modal .big-btn.create:hover {
-  background: #f44;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
-  border-color: #f44;
+  border-color: #764ba2;
   transform: translateY(-4px) scale(1.04);
 }
 .hero-modal .close-x {
