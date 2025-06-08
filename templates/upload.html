@@ -920,7 +920,14 @@
                 return;
             }
             const jobDescArea = document.getElementById('jobDesc');
+            const generateLink = document.getElementById('generateLink');
+            const originalText = generateLink.textContent;
+            
+            // Show loading state
             jobDescArea.value = 'Generating job description for "' + role + '"...';
+            generateLink.textContent = '(Loading...)';
+            generateLink.style.pointerEvents = 'none';
+            
             try {
                 const response = await fetch('/generate-job-desc', {
                     method: 'POST',
@@ -930,13 +937,34 @@
                 const data = await response.json();
                 if (data && data.description) {
                     jobDescArea.value = data.description;
+                    
+                    // Show if it was cached
+                    if (data.cached) {
+                        generateLink.textContent = '(Cached ✓)';
+                        generateLink.style.color = '#28ca42';
+                        setTimeout(() => {
+                            generateLink.textContent = originalText;
+                            generateLink.style.color = '';
+                        }, 2000);
+                    } else {
+                        generateLink.textContent = '(Generated ✓)';
+                        generateLink.style.color = '#28ca42';
+                        setTimeout(() => {
+                            generateLink.textContent = originalText;
+                            generateLink.style.color = '';
+                        }, 2000);
+                    }
                 } else {
                     jobDescArea.value = '';
                     alert('Could not generate job description.');
+                    generateLink.textContent = originalText;
                 }
             } catch (e) {
                 jobDescArea.value = '';
                 alert('Error generating job description.');
+                generateLink.textContent = originalText;
+            } finally {
+                generateLink.style.pointerEvents = 'auto';
             }
         };
         // Review my resume button handler

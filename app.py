@@ -2234,26 +2234,86 @@ def generate_job_desc():
     role = data.get('role', '').strip()
     if not role:
         return jsonify({'error': 'No role provided'}), 400
+    
+    # Create cache directory if it doesn't exist
+    cache_dir = 'job_desc_cache'
+    os.makedirs(cache_dir, exist_ok=True)
+    
+    # Create a cache key from the role name
+    import hashlib
+    cache_key = hashlib.md5(role.lower().encode()).hexdigest()
+    cache_file = os.path.join(cache_dir, f'{cache_key}.json')
+    
+    # Check if we have a cached version
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r', encoding='utf-8') as f:
+                cached_data = json.load(f)
+            
+            # Check if cache is not too old (7 days)
+            import time
+            cache_age = time.time() - cached_data.get('timestamp', 0)
+            if cache_age < 7 * 24 * 60 * 60:  # 7 days in seconds
+                print(f"📋 Using cached job description for: {role}")
+                return jsonify({'description': cached_data['description'], 'cached': True})
+            else:
+                print(f"📋 Cache expired for: {role}, regenerating...")
+        except Exception as e:
+            print(f"⚠️ Error reading cache: {e}")
+    
+    print(f"🤖 Generating new job description for: {role}")
+    
     prompt = f"""
 Write a professional job description for the role of '{role}'. The description should be suitable for a resume or job application and include key responsibilities, required skills, and qualifications. Be concise and relevant to modern industry standards.
+
+Focus on:
+- 3-5 key responsibilities
+- Required technical skills
+- Preferred qualifications
+- Experience level expectations
+
+Keep it between 150-300 words and make it actionable for someone tailoring their CV.
 """
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyANT0edzcgHlcS-4tOLKVY8XKjYYrswVEM"
-    headers = {'Content-Type': 'application/json'}
-    payload = {
-        "contents": [
-            {"parts": [
-                {"text": prompt}
-            ]}
-        ]
-    }
+    
     try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+        headers = {'Content-Type': 'application/json'}
+        payload = {
+            "contents": [
+                {"parts": [
+                    {"text": prompt}
+                ]}
+            ]
+        }
+        
         response = requests.post(url, headers=headers, json=payload)
+        
         if response.status_code == 200:
             result = response.json()
             desc = result['candidates'][0]['content']['parts'][0]['text']
-            return jsonify({'description': desc})
+            
+            # Cache the result
+            try:
+                import time
+                cache_data = {
+                    'role': role,
+                    'description': desc,
+                    'timestamp': time.time(),
+                    'generated_at': time.strftime('%Y-%m-%d %H:%M:%S')
+                }
+                
+                with open(cache_file, 'w', encoding='utf-8') as f:
+                    json.dump(cache_data, f, ensure_ascii=False, indent=2)
+                
+                print(f"💾 Cached job description for: {role}")
+                
+            except Exception as e:
+                print(f"⚠️ Error caching job description: {e}")
+            
+            return jsonify({'description': desc, 'cached': False})
         else:
             return jsonify({'error': 'Gemini API error', 'details': response.text}), 500
+            
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -2343,6 +2403,47 @@ Job Description:
     except Exception as e:
         print(f"Error in review_cv: {str(e)}")
         return jsonify({'error': f'Review error: {str(e)}'}), 500
+
+@app.route('/debug/job-desc-cache')
+def debug_job_desc_cache():
+    """Debug endpoint to view cached job descriptions"""
+    try:
+        cache_dir = 'job_desc_cache'
+        if not os.path.exists(cache_dir):
+            return jsonify({'message': 'No cache directory found'})
+        
+        cache_files = [f for f in os.listdir(cache_dir) if f.endswith('.json')]
+        cached_jobs = []
+        
+        for cache_file in cache_files:
+            try:
+                with open(os.path.join(cache_dir, cache_file), 'r', encoding='utf-8') as f:
+                    cache_data = json.load(f)
+                
+                import time
+                cache_age_days = (time.time() - cache_data.get('timestamp', 0)) / (24 * 60 * 60)
+                
+                cached_jobs.append({
+                    'role': cache_data.get('role', 'Unknown'),
+                    'generated_at': cache_data.get('generated_at', 'Unknown'),
+                    'cache_age_days': round(cache_age_days, 1),
+                    'description_preview': cache_data.get('description', '')[:100] + '...',
+                    'file': cache_file
+                })
+            except Exception as e:
+                print(f"Error reading cache file {cache_file}: {e}")
+        
+        # Sort by most recent first
+        cached_jobs.sort(key=lambda x: x.get('cache_age_days', 999))
+        
+        return jsonify({
+            'total_cached': len(cached_jobs),
+            'cache_directory': cache_dir,
+            'cached_jobs': cached_jobs
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True) 
