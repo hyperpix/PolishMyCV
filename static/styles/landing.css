@@ -190,7 +190,7 @@ html {
 
 .nav-cta:hover,
 .nav-cta:focus {
-  background: #d32f2f !important;
+  background: #764ba2 !important;
   color: #fff !important;
   transform: translateY(-2px) scale(1.04);
   box-shadow: 4px 12px 0 #000, 0 0 0 4px #ffd600;

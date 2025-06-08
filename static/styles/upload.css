@@ -145,7 +145,7 @@ body {
   text-align: center;
 }
 .upload-btn {
-  background: var(--red-accent);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);xxxx
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -164,7 +164,7 @@ body {
   transition: background 0.2s;
 }
 .upload-btn:hover {
-  background: #d90000;
+  background: #667eea;
 }
 .job-label {
   font-size: 20px;
