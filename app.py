@@ -2260,55 +2260,89 @@ Write a professional job description for the role of '{role}'. The description s
 @app.route('/api/review-cv', methods=['POST'])
 def review_cv():
     data = request.get_json()
-    cv = data.get('cv')
-    if not cv:
-        return jsonify({'error': 'Missing CV'}), 400
+    cv_text = data.get('cv_text')
+    job_description = data.get('job_description', '')
+    
+    if not cv_text:
+        return jsonify({'error': 'Missing CV text'}), 400
+
+    print(f"=== REVIEW CV REQUEST ===")
+    print(f"CV text length: {len(cv_text)}")
+    print(f"Job description length: {len(job_description)}")
+    print(f"CV text preview: {cv_text[:200]}...")
+    
+    # Parse the CV text into structured data for better analysis
+    try:
+        parsed_cv = parse_cv_text(cv_text)
+        print(f"Parsed CV data: {parsed_cv}")
+    except Exception as e:
+        print(f"Error parsing CV text: {e}")
+        # If parsing fails, create a minimal structure with the raw text
+        parsed_cv = {
+            'raw_text': cv_text,
+            'summary': cv_text[:500] + '...' if len(cv_text) > 500 else cv_text
+        }
 
     # Compose prompt for Gemini
     prompt = f"""
-You are a professional resume reviewer. Given the following CV (in JSON), do the following:
-1. Give an overall rating for the CV (0–100).
-2. List the top strengths of this CV.
-3. List the main weaknesses of this CV.
-4. Give actionable suggestions to improve this CV.
+You are a professional resume reviewer. Given the following CV content and job description, do the following:
+1. Give an overall rating for the CV (0–100) based on how well it matches the job requirements.
+2. List the top 5 strengths of this CV.
+3. List the main 5 weaknesses of this CV.
+4. Give 5 actionable suggestions to improve this CV for this specific job.
 
 Return your answer as JSON:
 {{
   "rating": 0-100,
-  "strengths": ["..."],
-  "weaknesses": ["..."],
-  "suggestions": ["..."]
+  "strengths": ["strength1", "strength2", ...],
+  "weaknesses": ["weakness1", "weakness2", ...],
+  "suggestions": ["suggestion1", "suggestion2", ...]
 }}
 
-CV:
-{json.dumps(cv, indent=2)}
+CV Content:
+{cv_text}
+
+Job Description:
+{job_description if job_description else "No specific job description provided - provide general CV feedback."}
 """
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyANT0edzcgHlcS-4tOLKVY8XKjYYrswVEM"
-    headers = {'Content-Type': 'application/json'}
-    payload = {
-        "contents": [
-            {"parts": [
-                {"text": prompt}
-            ]}
-        ]
-    }
+    
     try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+        headers = {'Content-Type': 'application/json'}
+        payload = {
+            "contents": [
+                {"parts": [
+                    {"text": prompt}
+                ]}
+            ]
+        }
+        
         response = requests.post(url, headers=headers, json=payload)
+        
         if response.status_code == 200:
             result = response.json()
             text = result['candidates'][0]['content']['parts'][0]['text']
+            print(f"Gemini response: {text}")
+            
             # Extract JSON from Gemini's response
             json_start = text.find('{')
             json_end = text.rfind('}') + 1
+            
             if json_start != -1 and json_end != -1:
-                feedback = json.loads(text[json_start:json_end])
+                json_text = text[json_start:json_end]
+                feedback = json.loads(json_text)
+                print(f"Parsed feedback: {feedback}")
                 return jsonify(feedback)
             else:
+                print(f"Could not extract JSON from response: {text}")
                 return jsonify({'error': 'Could not parse Gemini response', 'raw': text}), 500
         else:
+            print(f"Gemini API error: {response.status_code} - {response.text}")
             return jsonify({'error': 'Gemini API error', 'details': response.text}), 500
+            
     except Exception as e:
-        return jsonify({'error': f'Gemini error: {e}'}), 500
+        print(f"Error in review_cv: {str(e)}")
+        return jsonify({'error': f'Review error: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True) 
