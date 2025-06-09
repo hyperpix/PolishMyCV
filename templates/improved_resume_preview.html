@@ -3,7 +3,7 @@
 {% block extra_head %}
 {% endblock %}
 {% block content %}
-    <div class="container-notion">
+    <div class="page-wrapper">
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
@@ -59,23 +59,23 @@
             <!-- Action Buttons -->
             <div class="action-buttons">
                 {% if pdf_available %}
-                <a href="/download-improved/{{ session_id }}/{{ pdf_filename }}" class="btn-notion primary">
+                <a href="/download-improved/{{ session_id }}/{{ pdf_filename }}" class="btn-primary-custom primary">
                     <i class="fas fa-download"></i>
                     Download PDF
                 </a>
                 {% endif %}
                 
-                <a href="/download-improved/{{ session_id }}/{{ latex_filename }}" class="btn-notion">
+                <a href="/download-improved/{{ session_id }}/{{ latex_filename }}" class="btn-primary-custom">
                     <i class="fas fa-code"></i>
                     Download LaTeX
                 </a>
                 
-                <a href="/" class="btn-notion">
+                <a href="/" class="btn-primary-custom">
                     <i class="fas fa-plus"></i>
                     Improve Another CV
                 </a>
                 
-                <button onclick="window.history.back()" class="btn-notion">
+                <button onclick="window.history.back()" class="btn-primary-custom">
                     <i class="fas fa-arrow-left"></i>
                     Back to Review
                 </button>
@@ -86,7 +86,7 @@
         <div class="content-area">
             <div class="content-header">
                 <h1 class="page-title">
-                    <i class="fas fa-sparkles" style="color: var(--notion-yellow);"></i>
+                    <i class="fas fa-sparkles text-warning"></i>
                     Resume Improved
                 </h1>
                 <p class="page-subtitle">
