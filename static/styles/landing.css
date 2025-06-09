@@ -117,7 +117,7 @@ html {
 
 .navbar-brand i {
   font-size: 2.2em;
-  color: #f44;
+  color: #764ba2;
   filter: drop-shadow(0 2px 8px #f44a);
   transition: transform 0.18s, filter 0.18s;
 }
@@ -154,7 +154,7 @@ html {
   right: 18%;
   bottom: 7px;
   height: 3px;
-  background: linear-gradient(90deg, #f44, #ffd600);
+   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 2px;
   opacity: 0;
   transform: scaleX(0.5);
@@ -168,7 +168,7 @@ html {
 }
 
 .navbar-nav .nav-link:hover {
-  background: #f44;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff !important;
   box-shadow: 0 2px 12px #f44a;
 }
@@ -190,7 +190,7 @@ html {
 
 .nav-cta:hover,
 .nav-cta:focus {
-  background: #d32f2f !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff !important;
   transform: translateY(-2px) scale(1.04);
   box-shadow: 4px 12px 0 #000, 0 0 0 4px #ffd600;
@@ -417,7 +417,7 @@ html {
   position: relative;
   z-index: 10;
   /* border-radius: 40px 40px 0 0; */
-  margin-top: 100px;
+  margin-top: 150px;
   padding: 80px 0;
 }
 
@@ -833,8 +833,17 @@ html {
 }
 
 .footer-bottom a:hover {
-  color: #f44;
+  color: #764ba2;
 }
+
+
+.footer-bottom-bar {
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin-top: 40px;
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -1049,7 +1058,7 @@ html {
 }
 .cv-paper {
   position: absolute;
-  width: 300px;
+  width: 200px;
   height: 400px;
   background: #fff;
   border: 2px solid #e2e8f0;
