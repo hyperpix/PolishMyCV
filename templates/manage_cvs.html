@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage CVs - CVLatex</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% extends 'base.html' %}
+{% block title %}Manage CVs - CVLatex{% endblock %}
+{% block extra_head %}
     <style>
         :root {
             --red-accent: #ff2d2d;
@@ -285,15 +280,8 @@
             margin-bottom: 8px;
         }
     </style>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-file-code me-2"></i>CVLatex
-            </a>
-        </div>
-    </nav>
+{% endblock %}
+{% block content %}
     <div class="main-container">
         <div class="page-header">
             <h1 class="page-title">
@@ -357,6 +345,8 @@
         </div>
     </div>
 
+{% endblock %}
+{% block extra_scripts %}
     <script>
         let currentDeleteId = null;
 
@@ -521,5 +511,4 @@
             alert('Success: ' + message);
         }
     </script>
-</body>
-</html> 
+{% endblock %}

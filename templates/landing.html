@@ -1,67 +1,13 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Polish My CV - AI-Powered Resume Transformation</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="static/styles/landing.css" />
-  </head>
-  <body>
-    <div class="animated-bg"></div>
-
-    <nav class="navbar navbar-expand-lg">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-          <i class="fas fa-file-circle-check"></i>
-          Polish My CV
-        </a>
-        <button
-          class="navbar-toggler border-0"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <i class="fas fa-bars text-white"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#features">Features</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#how-it-works">Process</a>
-            </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link" href="#demo">Demo</a>
-            </li> -->
-          </ul>
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link nav-cta" href="/upload">Start Free</a>
-            </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link" href="/create-cv" style="margin-left: 8px"
-                >Create CV</a
-              >
-            </li> -->
-          </ul>
-        </div>
-      </div>
-    </nav>
+{% extends 'base.html' %}
+{% block title %}Polish My CV - AI-Powered Resume Transformation{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/landing.css') }}">
+{% endblock %}
+{% block nav_links %}
+<li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+<li class="nav-item"><a class="nav-link" href="#how-it-works">Process</a></li>
+{% endblock %}
+{% block content %}
 
     <section
       class="hero modern-hero"
@@ -454,8 +400,7 @@
         </div>
       </div>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="static/scripts/landing.js"></script>
-  </body>
-</html>
+{% endblock %}
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='scripts/landing.js') }}"></script>
+{% endblock %}

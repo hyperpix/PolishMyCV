@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Improved - Polish My CV (v2)</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% extends 'base.html' %}
+{% block title %}Resume Improved - Polish My CV (v2){% endblock %}
+{% block extra_head %}
     <style>
         :root {
             --notion-bg: #ffffff;
@@ -374,8 +369,8 @@
             }
         }
     </style>
-</head>
-<body>
+{% endblock %}
+{% block content %}
     <div class="main-container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -396,12 +391,12 @@
                     </div>
                     <div class="score-item">
                         <div class="score-label">After</div>
-                        <div class="score-value score-improved">{{ new_score|default(improved_score|default(85)) }}</div>
+                        <div class="score-value score-improved">{{ improved_score }}</div>
                     </div>
                 </div>
-                {% if (new_score|default(improved_score|default(85)))|int > original_score|int %}
+                {% if improved_score|int > original_score|int %}
                 <div class="score-improvement">
-                    <i class="fas fa-arrow-up"></i> +{{ (new_score|default(improved_score|default(85)))|int - original_score|int }} points improvement
+                    <i class="fas fa-arrow-up"></i> +{{ improved_score|int - original_score|int }} points improvement
                 </div>
                 {% endif %}
             </div>
@@ -520,7 +515,8 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+{% block extra_scripts %}
     <script>
         function switchTab(tabName) {
             // Update tab buttons
@@ -606,5 +602,4 @@
             });
         });
     </script>
-</body>
-</html> 
+{% endblock %}
