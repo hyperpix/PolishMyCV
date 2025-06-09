@@ -728,16 +728,28 @@
                 // Upload the file and get extracted text
                 const formData = new FormData();
                 formData.append('file', fileInput.files[0]);
-                const uploadResponse = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                const uploadData = await uploadResponse.json();
-                if (uploadData.success && uploadData.extracted_text) {
-                    extractedText = uploadData.extracted_text;
-                } else {
+                try {
+                    const uploadResponse = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!uploadResponse.ok) {
+                        throw new Error('Upload failed');
+                    }
+
+                    const uploadData = await uploadResponse.json();
+
+                    if (uploadData.success && uploadData.extracted_text) {
+                        extractedText = uploadData.extracted_text;
+                    } else {
+                        extractedText = '';
+                        alert(uploadData.error || 'Failed to extract text from CV.');
+                    }
+                } catch (err) {
                     extractedText = '';
-                    alert(uploadData.error || 'Failed to extract text from CV.');
+                    alert('Error uploading CV. Please try again.');
+                    console.error('Upload error:', err);
                 }
             }
         });
