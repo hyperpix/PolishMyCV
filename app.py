@@ -9,6 +9,7 @@ from docx import Document
 import openai
 from dotenv import load_dotenv
 import tempfile
+import tarfile
 import subprocess
 import time
 import traceback
@@ -16,6 +17,7 @@ import shutil
 import uuid
 from sheets_integration import save_cv_to_sheets
 import pdfplumber
+import pytinytex
 
 # Load environment variables
 load_dotenv()
@@ -54,7 +56,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['OUTPUT_FOLDER'] = 'output'
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.secret_key = os.getenv('SECRET_KEY', 'your-secret-key-here-change-in-production')
+app.secret_key = os.getenv('FLASK_SECRET_KEY') or os.getenv('SECRET_KEY', 'your-secret-key-here-change-in-production')
 
 # Create directories if they don't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -66,29 +68,58 @@ os.makedirs(CV_DATA_FOLDER, exist_ok=True)
 
 # Enhanced LaTeX availability check with environment variables
 LATEX_AVAILABLE = False
+PDFLATEX_PATH = None
 
-# Check multiple possible locations for pdflatex
-pdflatex_paths = [
-    '/opt/texlive/bin/x86_64-linux/pdflatex',
-    '/usr/local/bin/pdflatex',
-    '/usr/bin/pdflatex',
-    shutil.which('pdflatex')
-]
 
-for path in pdflatex_paths:
-    if path and os.path.exists(path) and os.access(path, os.X_OK):
+def detect_pdflatex():
+    """Locate pdflatex, using pytinytex if available."""
+    global PDFLATEX_PATH, LATEX_AVAILABLE
+
+    if PDFLATEX_PATH:
         LATEX_AVAILABLE = True
-        print(f"✅ Found pdflatex at: {path}")
-        break
+        return PDFLATEX_PATH
 
-if not LATEX_AVAILABLE:
-    # Final check using which command
-    LATEX_AVAILABLE = shutil.which('pdflatex') is not None
+    # 1. Environment variable override
+    env_path = os.getenv('PDFLATEX_PATH')
+    if env_path and os.path.exists(env_path) and os.access(env_path, os.X_OK):
+        PDFLATEX_PATH = env_path
+    else:
+        # 2. Standard lookup
+        PDFLATEX_PATH = shutil.which('pdflatex')
+        if not PDFLATEX_PATH:
+            for path in [
+                '/opt/texlive/bin/x86_64-linux/pdflatex',
+                '/usr/local/bin/pdflatex',
+                '/usr/bin/pdflatex'
+            ]:
+                if os.path.exists(path) and os.access(path, os.X_OK):
+                    PDFLATEX_PATH = path
+                    break
 
-# Force enable LaTeX if running on Windows (local development)
-if os.name == 'nt' and shutil.which('pdflatex'):
-    LATEX_AVAILABLE = True
-    print(f"🪟 Windows detected - LaTeX force-enabled for local development")
+    if not PDFLATEX_PATH:
+        # 3. pytinytex detection / install
+        try:
+            tt_base = pytinytex.get_tinytex_path()
+            if not tt_base:
+                print("📦 Attempting TinyTeX download via pytinytex...")
+                pytinytex.download_tinytex()
+                tt_base = pytinytex.get_tinytex_path()
+            if tt_base:
+                candidate = os.path.join(tt_base, 'bin', 'pdflatex')
+                if os.path.exists(candidate) and os.access(candidate, os.X_OK):
+                    PDFLATEX_PATH = candidate
+        except Exception as e:
+            print(f"⚠️ TinyTeX setup failed: {e}")
+
+    if not PDFLATEX_PATH and os.name == 'nt':
+        PDFLATEX_PATH = shutil.which('pdflatex')
+        if PDFLATEX_PATH:
+            print("🪟 Windows detected - LaTeX force-enabled for local development")
+
+    LATEX_AVAILABLE = PDFLATEX_PATH is not None
+
+
+detect_pdflatex()
 
 # Check for build status file
 BUILD_STATUS = "unknown"
@@ -108,6 +139,12 @@ try:
 except Exception as e:
     print(f"⚠️ Could not read build status: {e}")
 
+def get_pdflatex_path():
+    """Return the detected pdflatex path if available."""
+    if PDFLATEX_PATH is None:
+        detect_pdflatex()
+    return PDFLATEX_PATH
+
 # Enhanced startup message with more detailed information
 print(f"🌍 Environment: {os.getenv('FLASK_ENV', 'development')}")
 print(f"🐍 Python: {os.sys.version.split()[0]}")
@@ -120,7 +157,7 @@ if LATEX_AVAILABLE:
     # Get pdflatex version if possible
     try:
         import subprocess
-        result = subprocess.run(['pdflatex', '--version'], capture_output=True, text=True, timeout=5)
+        result = subprocess.run([get_pdflatex_path() or 'pdflatex', '--version'], capture_output=True, text=True, timeout=5)
         if result.returncode == 0 and result.stdout:
             version_line = result.stdout.split('\n')[0]
             print(f"📄 pdflatex version: {version_line}")
@@ -216,8 +253,6 @@ def admin_logout():
     session.pop('admin_logged_in', None)
     return redirect(url_for('admin_panel'))
 
-# Make sure to set a secret key for session
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'supersecretkey')
 
 ALLOWED_EXTENSIONS = {'pdf', 'docx'}
 
@@ -1029,6 +1064,43 @@ def generate_latex_resume(parsed_data):
 
     return latex_template
 
+
+def compile_latex_online(latex_content, output_filename):
+    """Compile LaTeX using the latexonline.cc service as a fallback."""
+    try:
+        print("🌐 Using latexonline.cc for compilation")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tex_path = os.path.join(tmpdir, 'main.tex')
+            with open(tex_path, 'w', encoding='utf-8') as f:
+                f.write(latex_content)
+
+            tar_path = os.path.join(tmpdir, 'texfiles.tar')
+            with tarfile.open(tar_path, 'w') as tar:
+                tar.add(tex_path, arcname='main.tex')
+
+            with open(tar_path, 'rb') as f:
+                files = {'file': ('texfiles.tar', f, 'application/x-tar')}
+                resp = requests.post(
+                    'https://latexonline.cc/data?target=main.tex',
+                    files=files,
+                    timeout=60
+                )
+        content_type = resp.headers.get('Content-Type', '')
+        if resp.status_code == 200 and 'pdf' in content_type:
+            output_dir = os.path.abspath(app.config['OUTPUT_FOLDER'])
+            os.makedirs(output_dir, exist_ok=True)
+            pdf_path = os.path.join(output_dir, output_filename)
+            with open(pdf_path, 'wb') as f:
+                f.write(resp.content)
+            print(f"✅ Online PDF created at: {pdf_path}")
+            return True
+        else:
+            print(f"❌ latexonline response {resp.status_code}")
+            print(resp.text[:200])
+    except Exception as e:
+        print(f"❌ Error during online LaTeX compilation: {e}")
+    return False
+
 def compile_latex_to_pdf(latex_content, output_filename):
     """Compile LaTeX content to PDF using pdflatex"""
     print(f"🔍 compile_latex_to_pdf called with output_filename: {output_filename}")
@@ -1037,11 +1109,8 @@ def compile_latex_to_pdf(latex_content, output_filename):
     print(f"🔍 Current working directory: {os.getcwd()}")
     
     if not LATEX_AVAILABLE:
-        print("❌ LaTeX not available - cannot compile to PDF")
-        # Double-check LaTeX availability
-        pdflatex_check = shutil.which('pdflatex')
-        print(f"🔍 Double-check pdflatex: {pdflatex_check}")
-        return False
+        print("⚠️ Local pdflatex not available - trying online compilation")
+        return compile_latex_online(latex_content, output_filename)
     
     print(f"🔧 Starting PDF compilation for: {output_filename}")
     print(f"📅 Compilation started at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
@@ -1051,14 +1120,7 @@ def compile_latex_to_pdf(latex_content, output_filename):
     
     try:
         # Find pdflatex executable
-        pdflatex_path = shutil.which('pdflatex')
-        if not pdflatex_path:
-            # Try specific paths
-            for path in ['/opt/texlive/bin/x86_64-linux/pdflatex', '/usr/local/bin/pdflatex', '/usr/bin/pdflatex']:
-                if os.path.exists(path):
-                    pdflatex_path = path
-                    break
-        
+        pdflatex_path = get_pdflatex_path()
         if not pdflatex_path:
             print("❌ pdflatex executable not found")
             return False
@@ -1136,23 +1198,24 @@ def compile_latex_to_pdf(latex_content, output_filename):
                 return False
         else:
             print(f"❌ PDF was not generated at: {pdf_path}")
-            
+
             # List files in temp directory for debugging
             try:
                 temp_files = os.listdir(temp_dir)
                 print(f"📁 Files in temp directory: {temp_files}")
             except Exception as e:
                 print(f"⚠️ Could not list temp directory: {e}")
-            
-            return False
+
+            print("🌐 Falling back to online compilation")
+            return compile_latex_online(latex_content, output_filename)
             
     except subprocess.TimeoutExpired:
         print("❌ LaTeX compilation timed out")
-        return False
+        return compile_latex_online(latex_content, output_filename)
     except Exception as e:
         print(f"❌ Error during LaTeX compilation: {e}")
         traceback.print_exc()
-        return False
+        return compile_latex_online(latex_content, output_filename)
     finally:
         # Change back to original directory
         os.chdir(original_dir)
@@ -1906,7 +1969,7 @@ def debug_system():
         }
         
         # Check LaTeX installation comprehensively
-        pdflatex_path = shutil.which('pdflatex')
+        pdflatex_path = get_pdflatex_path()
         latex_path = shutil.which('latex')
         debug_info['latex'] = {
             'pdflatex_found': pdflatex_path is not None,
@@ -1919,7 +1982,7 @@ def debug_system():
         # Test LaTeX packages availability
         if pdflatex_path:
             try:
-                result = subprocess.run(['pdflatex', '--version'], 
+                result = subprocess.run([pdflatex_path, '--version'],
                                       capture_output=True, text=True, timeout=10)
                 debug_info['latex']['version_check'] = {
                     'returncode': result.returncode,
@@ -1936,7 +1999,7 @@ def debug_system():
                             f.write(test_latex)
                         
                         test_result = subprocess.run([
-                            'pdflatex', '-interaction=nonstopmode', 
+                            pdflatex_path, '-interaction=nonstopmode',
                             '-output-directory', temp_dir, test_file
                         ], capture_output=True, text=True, timeout=30)
                         
@@ -2034,7 +2097,7 @@ def debug_test_latex_comprehensive():
             },
             'latex': {
                 'available_global': LATEX_AVAILABLE,
-                'pdflatex_path': shutil.which('pdflatex'),
+                'pdflatex_path': get_pdflatex_path(),
                 'latex_path': shutil.which('latex'),
                 'tex_path': shutil.which('tex'),
             },
@@ -2181,54 +2244,12 @@ If you can see this PDF, LaTeX compilation is working.
 \end{document}
 """
         
-        with tempfile.TemporaryDirectory() as temp_dir:
-            tex_file = os.path.join(temp_dir, 'test.tex')
-            with open(tex_file, 'w', encoding='utf-8') as f:
-                f.write(test_latex)
-            
-            # Set environment variables
-            env = os.environ.copy()
-            env['TEXMFCACHE'] = '/tmp/texmf-cache'
-            env['openout_any'] = 'a'
-            env['openin_any'] = 'a'
-            
-            # Change to temp directory
-            original_dir = os.getcwd()
-            os.chdir(temp_dir)
-            
-            try:
-                result = subprocess.run(
-                    ['pdflatex', '-interaction=nonstopmode', '-halt-on-error', 'test.tex'],
-                    capture_output=True,
-                    text=True,
-                    timeout=30,
-                    env=env
-                )
-                
-                pdf_path = os.path.join(temp_dir, 'test.pdf')
-                
-                compilation_result = {
-                    'status': 'success' if result.returncode == 0 and os.path.exists(pdf_path) else 'failed',
-                    'return_code': result.returncode,
-                    'pdf_created': os.path.exists(pdf_path),
-                    'pdf_size': os.path.getsize(pdf_path) if os.path.exists(pdf_path) else 0,
-                    'stdout_length': len(result.stdout),
-                    'stderr_length': len(result.stderr),
-                    'stdout_preview': result.stdout[:200] + '...' if len(result.stdout) > 200 else result.stdout,
-                    'stderr_preview': result.stderr[:200] + '...' if len(result.stderr) > 200 else result.stderr,
-                }
-                
-                # Check for log file
-                log_path = os.path.join(temp_dir, 'test.log')
-                if os.path.exists(log_path):
-                    with open(log_path, 'r', encoding='utf-8', errors='replace') as f:
-                        log_content = f.read()
-                    compilation_result['log_preview'] = log_content[-300:] if len(log_content) > 300 else log_content
-                
-                return compilation_result
-                
-            finally:
-                os.chdir(original_dir)
+        filename = f"test_{uuid.uuid4().hex}.pdf"
+        success = compile_latex_to_pdf(test_latex, filename)
+        return {
+            'status': 'success' if success else 'failed',
+            'output_file': filename,
+        }
             
     except Exception as e:
         return {
