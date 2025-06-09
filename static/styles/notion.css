@@ -1,0 +1,85 @@
+:root {
+    --n-bg: #fafafa;
+    --n-text: #37352f;
+    --n-muted: #6f6b62;
+    --n-primary: #2e68f1;
+    --n-border: #e9e5e3;
+    --n-radius: 8px;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--n-bg);
+    color: var(--n-text);
+    line-height: 1.6;
+    margin: 0;
+}
+
+a {
+    color: var(--n-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.navbar {
+    background: #fff;
+    border-bottom: 1px solid var(--n-border);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: var(--n-text) !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.navbar-brand i {
+    color: var(--n-primary);
+}
+
+.navbar-nav .nav-link {
+    color: var(--n-text);
+    font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--n-primary);
+}
+
+.nav-cta {
+    background: var(--n-primary);
+    color: #fff !important;
+    border-radius: var(--n-radius);
+    padding: 0.4rem 0.9rem;
+    font-weight: 600;
+}
+
+.nav-cta:hover {
+    background: #1d4ed8;
+    color: #fff !important;
+}
+
+.container-notion {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.btn-notion {
+    background: var(--n-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--n-radius);
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+}
+
+.btn-notion:hover {
+    background: #1d4ed8;
+    color: #fff;
+}
