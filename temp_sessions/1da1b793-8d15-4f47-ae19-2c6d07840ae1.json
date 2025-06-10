@@ -1,0 +1,79 @@
+{
+  "parsed_data": {
+    "name": "TAHASIN B CHOWDHURY",
+    "email": "tahasin.chy24@gmail.com",
+    "phone": "+8801535840311",
+    "linkedin": "LinkedIn",
+    "education": [
+      {
+        "degree": "BBA in Management Information Systems",
+        "institution": "University of Dhaka",
+        "date": "2022- Present",
+        "gpa": "3.2",
+        "details": "till 4th semester"
+      },
+      {
+        "degree": "HSC from Science group",
+        "institution": "Ispahani Public School and College",
+        "date": "2019-2021",
+        "gpa": "5.00"
+      },
+      {
+        "degree": "SSC from Science group",
+        "institution": "Chittagong Govt. High School",
+        "date": "2012-2019",
+        "gpa": "5.00"
+      }
+    ],
+    "experience": [
+      {
+        "title": "Op-Ed Writer",
+        "company": "Prothom Alo",
+        "date": "Sep’24 - Feb’25",
+        "description": [
+          "Contributing writer at the web based English version",
+          "Researching and analyzing Political, Economic, and Government Policies to craft insightful opinion pieces",
+          "Translating complex ideas into compelling narratives to engage diverse audiences"
+        ]
+      },
+      {
+        "title": "Content writer",
+        "company": "IlMIYA",
+        "date": "Nov’24 - Jan’25",
+        "description": [
+          "Prepared 40+ articles for this US based Ed-tech startup",
+          "Collaborated with the marketing team to develop content strategies that boosted engagement",
+          "Gained hands-on experience in a fast-paced startup environment, adapting to dynamic challenges"
+        ]
+      },
+      {
+        "title": "English Instructor",
+        "company": "Science Care",
+        "date": "Jul’22 - Jun’24",
+        "description": [
+          "Guided 350+ high school students on fundamental grammar concepts to strengthen their English pro(cid:28)ciency",
+          "Facilitated students in developing cohesive writing skills for clear and e(cid:27)ective communication",
+          "Outlined engaging lesson plans to enhance comprehension and practical language use"
+        ]
+      }
+    ],
+    "skills": {
+      "tools": [
+        "MS Excel",
+        "Canva"
+      ],
+      "other": [
+        "Content Writing",
+        "Project Management",
+        "Problem Solving",
+        "Event Management"
+      ]
+    },
+    "languages": [
+      "English"
+    ]
+  },
+  "mode": "professional",
+  "job_description": "",
+  "original_filename": "CV_Intern_2_resume.pdf"
+}

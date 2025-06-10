@@ -2,7 +2,7 @@ import os
 import re
 import json
 import requests
-from flask import Flask, request, render_template, jsonify, send_file
+from flask import Flask, request, render_template, jsonify, send_file, redirect, url_for, session, flash
 from werkzeug.utils import secure_filename
 import PyPDF2
 from docx import Document
@@ -15,7 +15,7 @@ import traceback
 import shutil
 import uuid
 from sheets_integration import save_cv_to_sheets
-
+import pdfplumber
 # Load environment variables
 load_dotenv()
 
@@ -52,6 +52,8 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['OUTPUT_FOLDER'] = 'output'
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.secret_key = os.getenv('SECRET_KEY', 'your-secret-key-here-change-in-production')
 
 # Create directories if they don't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -148,7 +150,73 @@ if os.path.exists('/app/latex_warning.txt'):
 
 # API keys
 openai.api_key = os.getenv('OPENAI_API_KEY')
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', 'AIzaSyC5rY2zgtv6x2JM8Ew0Ia-1oCUax2q1ubU')
+
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin123')
+GEMINI_KEY_FILE = 'gemini_key.txt'
+
+def load_gemini_key():
+    if os.path.exists(GEMINI_KEY_FILE):
+        with open(GEMINI_KEY_FILE, 'r') as f:
+            return f.read().strip()
+    return os.getenv('GEMINI_API_KEY', '')
+
+def save_gemini_key(new_key):
+    with open(GEMINI_KEY_FILE, 'w') as f:
+        f.write(new_key.strip())
+
+def get_gemini_key():
+    return load_gemini_key()
+
+GEMINI_API_KEY = get_gemini_key()
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_panel():
+    if 'admin_logged_in' not in session:
+        if request.method == 'POST':
+            password = request.form.get('password', '')
+            if password == ADMIN_PASSWORD:
+                session['admin_logged_in'] = True
+                return redirect(url_for('admin_panel'))
+            else:
+                flash('Incorrect password', 'danger')
+        return '''
+        <form method="post">
+            <h2>Admin Login</h2>
+            <input type="password" name="password" placeholder="Password" required />
+            <button type="submit">Login</button>
+        </form>
+        '''
+    # If logged in, show API key form
+    if request.method == 'POST' and 'new_key' in request.form:
+        new_key = request.form.get('new_key', '').strip()
+        if new_key:
+            save_gemini_key(new_key)
+            global GEMINI_API_KEY
+            GEMINI_API_KEY = new_key
+            flash('Gemini API key updated!', 'success')
+        else:
+            flash('API key cannot be empty.', 'danger')
+    current_key = get_gemini_key()
+    masked_key = current_key[:4] + '*' * (len(current_key)-8) + current_key[-4:] if len(current_key) > 8 else '*' * len(current_key)
+    return f'''
+    <h2>Gemini API Key Admin Panel</h2>
+    <form method="post">
+        <label>Current Gemini API Key:</label><br>
+        <input type="text" value="{masked_key}" readonly style="width:400px;" /><br><br>
+        <label>New Gemini API Key:</label><br>
+        <input type="text" name="new_key" style="width:400px;" required /><br><br>
+        <button type="submit">Update Key</button>
+    </form>
+    <form method="post" action="/admin-logout"><button type="submit">Logout</button></form>
+    '''
+
+@app.route('/admin-logout', methods=['POST'])
+def admin_logout():
+    session.pop('admin_logged_in', None)
+    return redirect(url_for('admin_panel'))
+
+# Make sure to set a secret key for session
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'supersecretkey')
 
 ALLOWED_EXTENSIONS = {'pdf', 'docx'}
 
@@ -156,15 +224,19 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def extract_text_from_pdf(file_path):
-    """Extract text from PDF file"""
+    """Extract text from PDF file using pdfplumber for better accuracy"""
     text = ""
     try:
-        with open(file_path, 'rb') as file:
-            pdf_reader = PyPDF2.PdfReader(file)
-            for page in pdf_reader.pages:
-                text += page.extract_text() + "\n"
+        with pdfplumber.open(file_path) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
     except Exception as e:
         print(f"Error extracting text from PDF: {e}")
+    print("=== Extracted PDF Text Start ===")
+    print(text[:1000])
+    print("=== Extracted PDF Text End ===")
     return text
 
 def extract_text_from_docx(file_path):
@@ -176,6 +248,9 @@ def extract_text_from_docx(file_path):
             text += paragraph.text + "\n"
     except Exception as e:
         print(f"Error extracting text from DOCX: {e}")
+    print("=== Extracted DOCX Text Start ===")
+    print(text[:1000])
+    print("=== Extracted DOCX Text End ===")
     return text
 
 def enhance_parsing_with_gemini(text):
@@ -496,10 +571,10 @@ def clean_text_for_latex(text):
         '▫': '\\textbullet',  # White small square
         '–': '--',           # En dash
         '—': '---',          # Em dash
-        ''': "'",            # Left single quotation mark
-        ''': "'",            # Right single quotation mark
-        '"': '"',            # Left double quotation mark
-        '"': '"',            # Right double quotation mark
+        '‘': "'",            # Left single quotation mark
+        '’': "'",            # Right single quotation mark
+        '“': '"',            # Left double quotation mark
+        '”': '"',            # Right double quotation mark
         '…': '...',          # Horizontal ellipsis
         '°': '\\textdegree', # Degree symbol
         '±': '\\textpm',     # Plus-minus
@@ -1364,6 +1439,8 @@ def upload_file():
             extracted_text = extract_text_from_docx(file_path)
         else:
             return jsonify({'error': 'Unsupported file type'}), 400
+        if not extracted_text.strip():
+            return jsonify({'error': 'Could not extract text from your file. Please upload a text-based PDF or DOCX.'}), 400
         
         # Parse the extracted text using Gemini AI
         parsed_data = parse_cv_text(extracted_text)
@@ -1412,7 +1489,8 @@ def upload_file():
         return jsonify({
             'success': True,
             'session_id': session_id,
-            'redirect_url': f'/preview-cv/{session_id}'
+            'redirect_url': f'/preview-cv/{session_id}',
+            'extracted_text': extracted_text
         })
     
     return jsonify({'error': 'Invalid file type. Please upload PDF or DOCX files only.'}), 400
@@ -2241,88 +2319,6 @@ def generate_from_preview():
         print(f"Error in generate_from_preview: {str(e)}")
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
-
-@app.route('/generate-job-desc', methods=['POST'])
-def generate_job_desc():
-    data = request.get_json()
-    role = data.get('role', '').strip()
-    if not role:
-        return jsonify({'error': 'No role provided'}), 400
-    prompt = f"""
-Write a professional job description for the role of '{role}'. The description should be suitable for a resume or job application and include key responsibilities, required skills, and qualifications. Be concise and relevant to modern industry standards.
-"""
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyANT0edzcgHlcS-4tOLKVY8XKjYYrswVEM"
-    headers = {'Content-Type': 'application/json'}
-    payload = {
-        "contents": [
-            {"parts": [
-                {"text": prompt}
-            ]}
-        ]
-    }
-    try:
-        response = requests.post(url, headers=headers, json=payload)
-        if response.status_code == 200:
-            result = response.json()
-            desc = result['candidates'][0]['content']['parts'][0]['text']
-            return jsonify({'description': desc})
-        else:
-            return jsonify({'error': 'Gemini API error', 'details': response.text}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/review-cv', methods=['POST'])
-def review_cv():
-    data = request.get_json()
-    cv = data.get('cv')
-    if not cv:
-        return jsonify({'error': 'Missing CV'}), 400
-
-    # Compose prompt for Gemini
-    prompt = f"""
-You are a professional resume reviewer. Given the following CV (in JSON), do the following:
-1. Give an overall rating for the CV (0–100).
-2. List the top strengths of this CV.
-3. List the main weaknesses of this CV.
-4. Give actionable suggestions to improve this CV.
-
-Return your answer as JSON:
-{{
-  "rating": 0-100,
-  "strengths": ["..."],
-  "weaknesses": ["..."],
-  "suggestions": ["..."]
-}}
-
-CV:
-{json.dumps(cv, indent=2)}
-"""
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyANT0edzcgHlcS-4tOLKVY8XKjYYrswVEM"
-    headers = {'Content-Type': 'application/json'}
-    payload = {
-        "contents": [
-            {"parts": [
-                {"text": prompt}
-            ]}
-        ]
-    }
-    try:
-        response = requests.post(url, headers=headers, json=payload)
-        if response.status_code == 200:
-            result = response.json()
-            text = result['candidates'][0]['content']['parts'][0]['text']
-            # Extract JSON from Gemini's response
-            json_start = text.find('{')
-            json_end = text.rfind('}') + 1
-            if json_start != -1 and json_end != -1:
-                feedback = json.loads(text[json_start:json_end])
-                return jsonify(feedback)
-            else:
-                return jsonify({'error': 'Could not parse Gemini response', 'raw': text}), 500
-        else:
-            return jsonify({'error': 'Gemini API error', 'details': response.text}), 500
-    except Exception as e:
-        return jsonify({'error': f'Gemini error: {e}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True) 

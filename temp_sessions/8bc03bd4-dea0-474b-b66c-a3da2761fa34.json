@@ -1,0 +1,98 @@
+{
+  "parsed_data": {
+    "name": "AYESHA MEHMOOD",
+    "email": "ayeshauni99@gmail.com",
+    "phone": "+923035901289",
+    "address": "Nishat Colony, Lahore",
+    "education": [
+      {
+        "institution": "THE STANDARD GROUP OF COLLEGES",
+        "details": "PRE-MEDICLE(SIALKOT)"
+      },
+      {
+        "institution": "VIRTUAL UNIVERSITY OF PAKISTAN",
+        "degree": "BECHOLOR’S IN COMPUTER SCIENCE",
+        "details": "6TH SEMESTER"
+      }
+    ],
+    "experience": [
+      {
+        "title": "Frontend Development Expertise",
+        "company": "CodexCue",
+        "description": [
+          "Strong background in frontend development with React.js, gained through an internship at CodexCue.",
+          "Proficient in CSS animations, JavaScript, and responsive design.",
+          "Developed custom web applications with a focus on performance optimization.",
+          "Skilled in using modern frontend frameworks and delivering high-quality results."
+        ]
+      },
+      {
+        "title": "Diverse Web Development Projects",
+        "description": [
+          "Experienced in WordPress and Shopify, working on international live projects and building client websites.",
+          "Skilled in theme development, plugin integration, and customization.",
+          "Created custom e-commerce solutions and visually appealing, optimized websites.",
+          "Strong knowledge of web development tools, delivering high-quality results."
+        ]
+      }
+    ],
+    "skills": {
+      "languages": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "PHP"
+      ],
+      "frameworks": [
+        "React",
+        "Tailwind",
+        "Bootstrape"
+      ],
+      "libraries": [
+        "jQuery",
+        "Bootstrap",
+        "React Material UI",
+        "React Bootstrap"
+      ],
+      "other": [
+        "WordPress customization",
+        "theme development",
+        "plugin integration",
+        "Shopify"
+      ]
+    },
+    "certifications": [
+      {
+        "name": "Digital Marketing Diploma",
+        "issuer": "University Of South Asia"
+      },
+      {
+        "name": "Introduction to Career Skills In Web Development",
+        "issuer": "Linkedin Learning"
+      },
+      {
+        "name": "Fronted Development",
+        "issuer": "Webdevrs"
+      }
+    ],
+    "website": "https://ayeshamehmood.netlify.app/",
+    "custom_sections": [
+      {
+        "title": "SUMMARY",
+        "content": "Highly skilled Frontend and WordPress Developer with a proven track record of delivering over 100+ successful\nprojects. Expertise in HTML, CSS, JavaScript , React , Tailwind ,Bootstrape, PHP and WordPress\ncustomization, with a strong focus on creating responsive, user-friendly websites. Adept at collaborating with\ncross-functional teams to deliver high-quality digital solutions that meet client needs and exceed expectations."
+      },
+      {
+        "title": "SKILLS",
+        "content": "Proficient in HTML, CSS, JavaScript and\nPHP for maintaining responsive web\napplications.\nSkilled in creating dynamic and visually\nappealing CSS animations to enhance\nuser experience.\nExtensive experience with WordPress\ncustomization, theme development, and\nplugin integration.\nCompetent in using jQuery, Bootstrap, and React to develop interactive and user-friendly interfaces.\nFamiliar with React Material UI, React\nBootstrap, and Tailwind CSS for streamlined and modern web design.\nBasic knowledge of Shopify for e-commerce solutions and platform\ncustomization.\nStrong problem-solving skills and ability\nto debug and optimize code for\nperformance.\nExcellent collaboration and communication skills, with experience\nworking in agile development\nenvironments."
+      },
+      {
+        "title": "PORTFOLIO",
+        "content": "https://ayeshamehmood.netlify.app/"
+      }
+    ],
+    "languages": []
+  },
+  "mode": "professional",
+  "job_description": "",
+  "original_filename": "Ayesha_Mehmood_4.pdf"
+}
